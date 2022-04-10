@@ -1,256 +1,189 @@
-import { Component, ViewChild, ViewChildren, QueryList, ElementRef } from '@angular/core';
-import { Orientation, SVGuitarChord } from 'svguitar';
 import { HttpClient } from '@angular/common/http';
-import { FretLabelPosition } from 'svguitar';
-import { Router } from '@angular/router'
-
-/* declare var require:any
-const svgSaver = require('svgsaver') */
-
-declare var parse:any
-
-
-declare var teste:any
-declare var svgExport:any
-import '../assets/js/custom.js'
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { GenerateChordService } from '../generate-chord.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-pool',
+  templateUrl: './pool.component.html',
+  styleUrls: ['./pool.component.css']
 })
-export class AppComponent {
+export class PoolComponent implements OnInit {
 
-  
+  @ViewChild("chordsContainer") chordsDiv:any
 
-  corda1_X = "38.357006"
-
-  @ViewChild("chordsChart") chordsChart:any
-
-  @ViewChildren("chordCharts") chordChartsHtmlElement:any
-
-  @ViewChildren("chordImage") chordImage:any
-
-  @ViewChild("bijeto") bijeto:any
-
-
-  title = 'svguitar-testing';
+  constructor(private http:HttpClient, private router:Router, private _generateChordService:GenerateChordService) { }
 
   chords:any[] = []
-  activeBtns:boolean[] = []
-  activeLength:number = 0
+  acordesCompletos:number = 0
 
-  chart = new SVGuitarChord("#chart")
-
-  chordCharts:SVGuitarChord[] = []
-
-  constructor(private http:HttpClient, private router:Router){}
-
-  mostrarImagens:boolean[]= []
-
-  drawChord(title:string,fingers:any[],barres:any[]){
-    this.chart
-    .configure({
-      title:title,
-      fretLabelPosition:FretLabelPosition.LEFT,
-      position:3,
-      orientation: Orientation.vertical
-    })
-    .chord({
-      fingers: fingers,
-        barres:[{fromString:barres[0], toString:barres[1], fret:barres[2]}],
-        
-    }).draw()
-  }
+  carregando:boolean = true
 
   url:string = "https://jonathanspinelli.com/_functions/getChords"
 
-  activateChord(index:number, chord:any){
-    
-    if(this.activeBtns[index]){
-       console.log(chord)
-       this.chordChartsHtmlElement._results[index].nativeElement.classList.remove("hide")
-       this.chordCharts[index]
-        .configure({title:chord.title, frets:4, fretLabelPosition:FretLabelPosition.LEFT})
-        .chord({fingers: chord.fingers, position:chord.position, barres:[{fromString:chord.barres[0][0], toString:chord.barres[0][1], fret:chord.barres[0][2]}]})
-        .draw()
-        this.activeLength = this.activeBtns.filter(e => e == true).length
-        
-    } else {
-      this.chordChartsHtmlElement._results[index].nativeElement.classList.add("hide")
-      this.chordCharts[index].clear()
-     
-      this.activeLength = this.activeBtns.filter(e => e == true).length
-    }
-  }
-
-  mostrarImagem() {
-    
-  }
-
   SVG_gerarDiagramaBase(position:number) {
 
-  let pathLabels = ["stroke-linecap", "fill","stroke-linejoin","d","stroke","stroke-width","stroke-opacity","stroke-miterlimit","style","inkscape:label"]
-  let paths = {
-     headDireito:["butt","none","miter","m 38.178987,8.83911 3.20121,-8.68853","#000000","0.703037","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","direito"],
-     headEsquerdo:["butt","none","miter","M 8.041717,8.84393 4.854299,0.14576","#000000","1.99464","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.702998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","esquerdo"],
-     pestana:["butt","none","miter","M 7.769288,9.55474 H 38.493817","#000000","2.33578","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","pestana"],
-     pestanaAlt:["butt","none","miter","M 8.021455,10.371489 H 38.185327","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","pestana-alt"],
-     traste1:["butt","none","miter","M 8.064175,16.49309 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste1"],
-     traste2:["butt","none","miter","M 8.106896,22.6147 H 38.270767","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste2"],
-     traste3:["butt","none","miter","M 8.064175,28.73631 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste3"],
-     traste4:["butt","none","miter","M 8.064175,34.85791 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste4"],
-     traste5:["butt","none","miter","M 8.064175,40.97952 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste5"],
-     corda1:["butt","none","miter","M 38.357007,8.4067008 V 44.91657","#000000","1.99511","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.3175;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda1"],
-     corda2:["butt","none","miter","M 32.303137,8.4067008 V 44.9207","#000000","1.99316","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.423333;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda2"],
-     corda3:["butt","none","miter","M 26.249255,8.4067008 V 44.96481","#000000","1.99481","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.529167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda3"],
-     corda4:["butt","none","miter","M 20.195352,8.4067008 V 44.96481","#000000","1.99481","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.635;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda4"],
-     corda5:["butt","none","miter","M 14.14147,8.4067008 V 44.84077","#000000","1.99134","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.740833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda5"],
-     corda6:["butt","none","miter","M 8.087599,8.40683 V 44.9207","#000000","1.99353","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.846667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda6"]
-   }
-
-  // CRIAR O ELEMENTO SVG:
-   let svg1 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-   svg1.setAttribute("width","46.443932mm")
-   svg1.setAttribute("height","54.022198mm") //era originalmente 50...
-   svg1.setAttribute("viewBox","0 0 46.443932 50.022198")
-  ////////////////////////////////////////////////////////////////////////////
-
-
-  // CRIAR A CAMADA DO DIAGRAMA BASE:
-   let gDiagramaBase = document.createElementNS("http://www.w3.org/2000/svg", "g")
-   gDiagramaBase.setAttribute("inkscape:groupmode","layer")
-   gDiagramaBase.setAttribute("inkscape:label","DIAGRAMA")
-  ///////////////////////////////////////////////////////////////////////////// 
-
-
-
-
-  // CRIAR O GRUPO PARA O HEADSTOCK
-   let gDB_Head = document.createElementNS("http://www.w3.org/2000/svg", "g")
-   gDB_Head.setAttribute("inkscape:label","head")
-  /////////////////////////////////////////////////////////////////////////////
-
-  /* CRIAR O HEADSTOCK  */
-   let headDireito = document.createElementNS("http://www.w3.org/2000/svg","path")
-   let headEsquerdo = document.createElementNS("http://www.w3.org/2000/svg","path")
-   ////////////////
-
-
-
-
-
-  // CRIAR O GRUPO PARA OS TRASTES
-  let gDB_Trastes = document.createElementNS("http://www.w3.org/2000/svg", "g")
-  gDB_Trastes.setAttribute("inkscape:label","trastes")
-  /////////////////////////////////////////////////////////////////////////////
-
-  /* CRIAR OS TRASTES */
-  let trastes_pestana = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let trastes_pestanaAlt = document.createElementNS("http://www.w3.org/2000/svg","path")
-  let trastes_traste1 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let trastes_traste2 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let trastes_traste3 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let trastes_traste4 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let trastes_traste5 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let trastes_position = document.createElementNS("http://www.w3.org/2000/svg","text")
-  let trastes_positionText = document.createElementNS("http://www.w3.org/2000/svg","tspan")
-  ////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-  // CRIAR O GRUPO PARA AS CORDAS
-  let gDB_Cordas = document.createElementNS("http://www.w3.org/2000/svg", "g")
-  gDB_Cordas.setAttribute("inkscape:label","cordas")
-  /////////////////////////////////////////////////////////////////////////////
-
-  /* CRIAR AS CORDAS */
-  let corda1 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let corda2 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let corda3 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let corda4 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let corda5 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  let corda6 = document.createElementNS("http://www.w3.org/2000/svg", "path")
-  ///////////////////////////////////////////////////////////////////////////////////
-
-  // CRIAR TEXTO DE POSIÇÃO, CASO SEJA INFORMADA
-  if(position > 1) {
-    let positionLabels = ["xml:space","style","x","y"]
-    let positionValues = [
-      "preserve",
-      "font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.19751px;line-height:1.25;font-family:'Avenir Next LT Pro Bold';-inkscape-font-specification:'Avenir Next LT Pro, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;fill:#000000;stroke-width:0.182553",
-      "5.2235003",
-      "15.261813"
-    ]
-    for(var i = 0; i<positionLabels.length; i++) {
-      trastes_position.setAttribute(positionLabels[i],positionValues[i])
-    }
-    let positionNumber = position.toString() + "ª"
-    trastes_positionText.textContent = positionNumber
-    trastes_position.appendChild(trastes_positionText)
-    gDB_Trastes.appendChild(trastes_position)
-  }
+    let pathLabels = ["stroke-linecap", "fill","stroke-linejoin","d","stroke","stroke-width","stroke-opacity","stroke-miterlimit","style","inkscape:label"]
+    let paths = {
+       headDireito:["butt","none","miter","m 38.178987,8.83911 3.20121,-8.68853","#000000","0.703037","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","direito"],
+       headEsquerdo:["butt","none","miter","M 8.041717,8.84393 4.854299,0.14576","#000000","1.99464","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.702998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","esquerdo"],
+       pestana:["butt","none","miter","M 7.769288,9.55474 H 38.493817","#000000","2.33578","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","pestana"],
+       pestanaAlt:["butt","none","miter","M 8.021455,10.371489 H 38.185327","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","pestana-alt"],
+       traste1:["butt","none","miter","M 8.064175,16.49309 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste1"],
+       traste2:["butt","none","miter","M 8.106896,22.6147 H 38.270767","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste2"],
+       traste3:["butt","none","miter","M 8.064175,28.73631 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste3"],
+       traste4:["butt","none","miter","M 8.064175,34.85791 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste4"],
+       traste5:["butt","none","miter","M 8.064175,40.97952 H 38.228047","#000000","0.702292","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-opacity:1","traste5"],
+       corda1:["butt","none","miter","M 38.357007,8.4067008 V 44.91657","#000000","1.99511","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.3175;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda1"],
+       corda2:["butt","none","miter","M 32.303137,8.4067008 V 44.9207","#000000","1.99316","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.423333;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda2"],
+       corda3:["butt","none","miter","M 26.249255,8.4067008 V 44.96481","#000000","1.99481","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.529167;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda3"],
+       corda4:["butt","none","miter","M 20.195352,8.4067008 V 44.96481","#000000","1.99481","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.635;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda4"],
+       corda5:["butt","none","miter","M 14.14147,8.4067008 V 44.84077","#000000","1.99134","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.740833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda5"],
+       corda6:["butt","none","miter","M 8.087599,8.40683 V 44.9207","#000000","1.99353","1","4","fill:#808080;fill-opacity:1;stroke:#999999;stroke-width:0.846667;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1","corda6"]
+     }
   
-
-
-
-
-  //CRIAR ATRIBUTOS PARA OS PATHS (heads, trastes e cordas)
-  for(var i = 0; i < pathLabels.length; i++) {
-    headDireito.setAttribute(pathLabels[i], paths.headDireito[i])
-    headEsquerdo.setAttribute(pathLabels[i], paths.headEsquerdo[i])
-    trastes_pestana.setAttribute(pathLabels[i], paths.pestana[i])
-    trastes_pestanaAlt.setAttribute(pathLabels[i],paths.pestanaAlt[i])
-    trastes_traste1.setAttribute(pathLabels[i], paths.traste1[i])
-    trastes_traste2.setAttribute(pathLabels[i], paths.traste2[i])
-    trastes_traste3.setAttribute(pathLabels[i], paths.traste3[i])
-    trastes_traste4.setAttribute(pathLabels[i], paths.traste4[i])
-    trastes_traste5.setAttribute(pathLabels[i], paths.traste5[i])
-    corda1.setAttribute(pathLabels[i], paths.corda1[i])
-    corda2.setAttribute(pathLabels[i], paths.corda2[i])
-    corda3.setAttribute(pathLabels[i], paths.corda3[i])
-    corda4.setAttribute(pathLabels[i], paths.corda4[i])
-    corda5.setAttribute(pathLabels[i], paths.corda5[i])
-    corda6.setAttribute(pathLabels[i], paths.corda6[i])
-  }
-
-
-  //ADICIONAR ELEMENTOS NOS GRUPOS
-  gDB_Trastes.appendChild(trastes_traste1) //colocar os trastes no grupo de trastes
-  gDB_Trastes.appendChild(trastes_traste2)
-  gDB_Trastes.appendChild(trastes_traste3)
-  gDB_Trastes.appendChild(trastes_traste4)
-  gDB_Trastes.appendChild(trastes_traste5)
-  if(position == 1){
-    gDB_Trastes.appendChild(trastes_pestana) 
-    gDB_Head.appendChild(headDireito) //colocar os heads no grupo do headstock
-    gDB_Head.appendChild(headEsquerdo)
-  } else {
-    gDB_Trastes.appendChild(trastes_pestanaAlt) 
-  }
-
-  gDB_Cordas.appendChild(corda1) //colocar as cordas no grupo de cordas
-  gDB_Cordas.appendChild(corda2)
-  gDB_Cordas.appendChild(corda3)
-  gDB_Cordas.appendChild(corda4)
-  gDB_Cordas.appendChild(corda5)
-  gDB_Cordas.appendChild(corda6)
-
-
-  //ADICIONAR GRUPOS NA CAMADA DO DIAGRAMA BASE
-  gDiagramaBase.appendChild(gDB_Trastes) // colocar o grupo de trastes na camada do diagrama base
-  gDiagramaBase.appendChild(gDB_Head)   // colocar o grupo do headstock na camada do diagrama base
-  gDiagramaBase.appendChild(gDB_Cordas) // colocar o grupo de cordas na camada do diagrama base
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-   svg1.appendChild(gDiagramaBase) // colocar o grupo do diagrama base dentro do svg criado
-   //document.getElementById("vejamos")?.appendChild(svg1)
-   return(svg1)
+    // CRIAR O ELEMENTO SVG:
+     let svg1 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+     svg1.setAttribute("width","46.443932mm")
+     svg1.setAttribute("height","54.022198mm") //era originalmente 50...
+     svg1.setAttribute("viewBox","0 0 46.443932 50.022198")
+     //svg1.classList.add("teste")
+    ////////////////////////////////////////////////////////////////////////////
+  
+  
+    // CRIAR A CAMADA DO DIAGRAMA BASE:
+     let gDiagramaBase = document.createElementNS("http://www.w3.org/2000/svg", "g")
+     gDiagramaBase.setAttribute("inkscape:groupmode","layer")
+     gDiagramaBase.setAttribute("inkscape:label","DIAGRAMA")
+    ///////////////////////////////////////////////////////////////////////////// 
+  
+  
+  
+  
+    // CRIAR O GRUPO PARA O HEADSTOCK
+     let gDB_Head = document.createElementNS("http://www.w3.org/2000/svg", "g")
+     gDB_Head.setAttribute("inkscape:label","head")
+    /////////////////////////////////////////////////////////////////////////////
+  
+    /* CRIAR O HEADSTOCK  */
+     let headDireito = document.createElementNS("http://www.w3.org/2000/svg","path")
+     let headEsquerdo = document.createElementNS("http://www.w3.org/2000/svg","path")
+     ////////////////
+  
+  
+  
+  
+  
+    // CRIAR O GRUPO PARA OS TRASTES
+    let gDB_Trastes = document.createElementNS("http://www.w3.org/2000/svg", "g")
+    gDB_Trastes.setAttribute("inkscape:label","trastes")
+    /////////////////////////////////////////////////////////////////////////////
+  
+    /* CRIAR OS TRASTES */
+    let trastes_pestana = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let trastes_pestanaAlt = document.createElementNS("http://www.w3.org/2000/svg","path")
+    let trastes_traste1 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let trastes_traste2 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let trastes_traste3 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let trastes_traste4 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let trastes_traste5 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let trastes_position = document.createElementNS("http://www.w3.org/2000/svg","text")
+    let trastes_positionText = document.createElementNS("http://www.w3.org/2000/svg","tspan")
+    ////////////////////////////////////////////////////////////////////////////////////
+  
+  
+  
+  
+    // CRIAR O GRUPO PARA AS CORDAS
+    let gDB_Cordas = document.createElementNS("http://www.w3.org/2000/svg", "g")
+    gDB_Cordas.setAttribute("inkscape:label","cordas")
+    /////////////////////////////////////////////////////////////////////////////
+  
+    /* CRIAR AS CORDAS */
+    let corda1 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let corda2 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let corda3 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let corda4 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let corda5 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    let corda6 = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    ///////////////////////////////////////////////////////////////////////////////////
+  
+    // CRIAR TEXTO DE POSIÇÃO, CASO SEJA INFORMADA
+    if(position > 1) {
+      let positionLabels = ["xml:space","style","x","y"]
+      let positionValues = [
+        "preserve",
+        "font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.19751px;line-height:1.25;font-family:'Avenir Next LT Pro Bold';-inkscape-font-specification:'Avenir Next LT Pro, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;fill:#000000;stroke-width:0.182553",
+        "5.2235003",
+        "15.261813"
+      ]
+      for(var i = 0; i<positionLabels.length; i++) {
+        trastes_position.setAttribute(positionLabels[i],positionValues[i])
+      }
+      let positionNumber = position.toString() + "ª"
+      trastes_positionText.textContent = positionNumber
+      trastes_position.appendChild(trastes_positionText)
+      gDB_Trastes.appendChild(trastes_position)
+    }
     
-  }
+  
+  
+  
+  
+    //CRIAR ATRIBUTOS PARA OS PATHS (heads, trastes e cordas)
+    for(var i = 0; i < pathLabels.length; i++) {
+      headDireito.setAttribute(pathLabels[i], paths.headDireito[i])
+      headEsquerdo.setAttribute(pathLabels[i], paths.headEsquerdo[i])
+      trastes_pestana.setAttribute(pathLabels[i], paths.pestana[i])
+      trastes_pestanaAlt.setAttribute(pathLabels[i],paths.pestanaAlt[i])
+      trastes_traste1.setAttribute(pathLabels[i], paths.traste1[i])
+      trastes_traste2.setAttribute(pathLabels[i], paths.traste2[i])
+      trastes_traste3.setAttribute(pathLabels[i], paths.traste3[i])
+      trastes_traste4.setAttribute(pathLabels[i], paths.traste4[i])
+      trastes_traste5.setAttribute(pathLabels[i], paths.traste5[i])
+      corda1.setAttribute(pathLabels[i], paths.corda1[i])
+      corda2.setAttribute(pathLabels[i], paths.corda2[i])
+      corda3.setAttribute(pathLabels[i], paths.corda3[i])
+      corda4.setAttribute(pathLabels[i], paths.corda4[i])
+      corda5.setAttribute(pathLabels[i], paths.corda5[i])
+      corda6.setAttribute(pathLabels[i], paths.corda6[i])
+    }
+  
+  
+    //ADICIONAR ELEMENTOS NOS GRUPOS
+    gDB_Trastes.appendChild(trastes_traste1) //colocar os trastes no grupo de trastes
+    gDB_Trastes.appendChild(trastes_traste2)
+    gDB_Trastes.appendChild(trastes_traste3)
+    gDB_Trastes.appendChild(trastes_traste4)
+    gDB_Trastes.appendChild(trastes_traste5)
+    if(position == 1){
+      gDB_Trastes.appendChild(trastes_pestana) 
+      gDB_Head.appendChild(headDireito) //colocar os heads no grupo do headstock
+      gDB_Head.appendChild(headEsquerdo)
+    } else {
+      gDB_Trastes.appendChild(trastes_pestanaAlt) 
+    }
+  
+    gDB_Cordas.appendChild(corda1) //colocar as cordas no grupo de cordas
+    gDB_Cordas.appendChild(corda2)
+    gDB_Cordas.appendChild(corda3)
+    gDB_Cordas.appendChild(corda4)
+    gDB_Cordas.appendChild(corda5)
+    gDB_Cordas.appendChild(corda6)
+  
+  
+    //ADICIONAR GRUPOS NA CAMADA DO DIAGRAMA BASE
+    gDiagramaBase.appendChild(gDB_Trastes) // colocar o grupo de trastes na camada do diagrama base
+    gDiagramaBase.appendChild(gDB_Head)   // colocar o grupo do headstock na camada do diagrama base
+    gDiagramaBase.appendChild(gDB_Cordas) // colocar o grupo de cordas na camada do diagrama base
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  
+     svg1.appendChild(gDiagramaBase) // colocar o grupo do diagrama base dentro do svg criado
+     //document.getElementById("vejamos")?.appendChild(svg1)
+     return(svg1)
+      
+    }
 
   SVG_gerarAcorde(title:string, dedos:number[][], footer:string[],pestanaInstr:number[], position? :number) {
     let base
@@ -286,25 +219,40 @@ export class AppComponent {
     acorde.setAttribute("inkscape:groupmode","layer")
     acorde.setAttribute("inkscape:label","ACORDE")
 
-    //TITULO
+
+
+
+
+    //GERAR GRUPO DO TÍTULO
+    let gTitulo = document.createElementNS("http://www.w3.org/2000/svg", "g")
+    gTitulo.setAttribute("inkscape:label","título")
+
+
+    //GERAR CONTAINER DO TEXTO DO TÍTULO (TAG <text>)
       let text = document.createElementNS("http://www.w3.org/2000/svg","text")
-      let textLabels = ["xml:space","style","x","y","text-anchor","inkscape:label"]
+      let textLabels = ["xml:space","style","y","text-anchor","inkscape:label"]
+      let textSize = "6.23304px" //era 6.53304px 
       let textValues = [
         "preserve",
-        "font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.53304px;line-height:1.25;font-family:'Avenir Next LT Pro Bold';-inkscape-font-specification:'Avenir Next LT Pro, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;fill:#333333;stroke-width:0.264583",
-        "50%",
+        "font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:" + textSize + ";line-height:1.25;font-family:'Avenir Next Editada';-inkscape-font-specification:'Avenir Next LT Pro, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:end;text-anchor:end;fill:#333333;stroke-width:0.264583",
         "6.1069942",
         "middle",
         "title"
       ]
+      
     
     for(var i = 0; i<textLabels.length; i++) {
       text.setAttribute(textLabels[i],textValues[i])
     }
-    
+
+
+    //GERAR TEXTO DO TÍTULO (TAG <tspan>)
     let textContent = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     textContent.setAttribute("text-anchor","middle") //alinhar o texto no centro
+    textContent.setAttribute("x","50%")
 
+
+    //GERAR TEXTOS SOBRE OU SOBESCRITO QUANDO PRECISAR (TAG <tspan> tb)
     let textContentSuperscript = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     let textContentSubscript = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     textContentSuperscript.setAttribute("style","font-size:80%")
@@ -313,24 +261,29 @@ export class AppComponent {
     textContentSubscript.setAttribute("baseline-shift","-30%")
     textContentSubscript.setAttribute("dx","-0.65em")
 
+
+
+
     if(title.slice(-2) == "74"){
       textContent.setAttribute("dy","-0.1em")
-     let indexOf7 = title.indexOf("7")
-      title = title.substring(0,indexOf7)
+      let indexOf7 = title.indexOf("7")
+      title = title.substring(0,indexOf7) //tirar o 7 e o 4 do texto
       textContentSuperscript.textContent = "7"
       textContentSubscript.textContent = "4"
       textContent.textContent = title
-      text.appendChild(textContent)
-      text.appendChild(textContentSuperscript)
-      text.appendChild(textContentSubscript)
+      text.appendChild(textContent) //colocar o texto <tspan> dentro do Container de Texto <text>
+      text.appendChild(textContentSuperscript) //same
+      text.appendChild(textContentSubscript) //same
     } else {
       textContent.textContent = title
       text.appendChild(textContent)
-    }
-    
 
-    
-    acorde.appendChild(text)
+        
+        
+    }
+
+    gTitulo.appendChild(text)
+    acorde.appendChild(gTitulo)
 
   //LOGICA DEDOS
 
@@ -547,38 +500,51 @@ export class AppComponent {
 
     //colocar a camada de acordes no arquivo SVG
     base.appendChild(acorde)
+    
 
     //colocar o arquivo SVG na página
-   // document.getElementById("vejamos")?.appendChild(base)
-   //console.log(base)
-   return(base)
-   
+    // document.getElementById("vejamos")?.appendChild(base)
+    //console.log(base)
+    return(base)
+    
   }
-
-  acordesCompletos:number = 0
 
   navigate() {
     this.router.navigate(['/buscador'])
   }
 
-  ngOnInit(){
-   // this.drawChord('_', [],[])
+  getChords() {
+    this.carregando = true
 
-    /* this.http.get(this.url).toPromise().then((data:any) => {
-      console.log(data)
+    if(this.chordsDiv !== undefined) {
+      this.chordsDiv.nativeElement.innerHTML = "<div id='vejamos'></div>"
+    }
+
+    this.chords = []
+    this.http.get(this.url).toPromise().then((data:any) => {
+      //console.log(data)
       this.chords = data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
-      console.log(this.chords)
+      //console.log(this.chords)
       this.acordesCompletos = this.chords.filter(e => e.pestana).length
 
       this.chords.forEach(chord => {
         if(chord.pestana) {
           if(chord.position) {
-            document.getElementById("vejamos")?.appendChild(this.SVG_gerarAcorde(chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)) 
+           // document.getElementById("vejamos")?.appendChild(this._generateChordService.SVG_gerarAcorde(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)) 
+           document.getElementById("vejamos")?.appendChild(this.SVG_gerarAcorde(chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)) 
           } else {
-            document.getElementById("vejamos")?.appendChild(this.SVG_gerarAcorde(chord.title,chord.dedos,chord.footer,chord.pestana)) 
+            //document.getElementById("vejamos")?.appendChild(this._generateChordService.SVG_gerarAcorde(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)) 
+            document.getElementById("vejamos")?.appendChild(this.SVG_gerarAcorde(chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)) 
           }
         }  
       })  
-    }) */
+      this.carregando = false
+    })
+
   }
+
+  ngOnInit(): void {
+    this.getChords()
+  }
+
 }

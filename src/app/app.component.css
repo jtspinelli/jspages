@@ -1,0 +1,81 @@
+.testing {
+    width: 300px;
+}
+
+.space {
+    margin-right: 10px;
+}
+
+.center-page {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.flex-1 {
+    flex-grow: 1;
+}
+
+.flex-2 {
+    flex-grow: 2;
+}
+
+.flex-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.padding-10 {
+    padding: 10px;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.pointable {
+    cursor: pointer;
+}
+
+.pointable:hover {
+    background-color: rgb(196, 60, 60);
+    color: white;
+}
+
+.btn-tag {
+    border: 1px solid gray;
+    border-radius: 3px;
+    margin: 0 2px;
+    border-color: rgb(196, 60, 60);
+    height: 30px;
+}
+
+.btn-tag-active {
+    background-color: brown;
+    color: white;
+}
+
+.teste {
+    color: red;
+}
+
+.hide {
+    display: none;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.linkNextPage {
+    text-align: right;
+    padding-right: 8%;
+}
+
+.linkNextPage:hover {
+    cursor: pointer;
+    color: darkslateblue;
+}

@@ -1,0 +1,6 @@
+
+
+function teste (){
+        alert("olá")
+    
+}

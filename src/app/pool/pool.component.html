@@ -1,0 +1,30 @@
+<div>
+    <h2> Qtde de acordes: <strong>{{ acordesCompletos }}</strong>  </h2>
+  
+    <h4 class="linkNextPage" (click)="navigate()">Pagina seguinte -></h4>
+   
+</div>
+
+<div>
+    <button (click)="getChords()">Recarregar lista de acordes</button>
+</div>
+
+<div *ngIf="carregando" style="display:flex; align-items:center" id="spinner-loading">
+    <div>
+       <img width="100px" src="../../assets/spinning-loading.gif" alt=""> 
+    </div>
+
+    <div>
+        <p style="font-size: 20px; color: rgb(196, 74, 74);">construindo acordes...</p>
+    </div>
+    
+    
+</div>
+
+<div #chordsContainer>
+   <div class="inline" id="vejamos"></div> 
+</div>
+
+
+
+

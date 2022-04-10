@@ -1,0 +1,13 @@
+.linkNextPage {
+    text-align: right;
+    padding-right: 8%;
+}
+
+.linkNextPage:hover {
+    cursor: pointer;
+    color: darkslateblue;
+}
+
+.inline {
+    display: inline-block;
+}

@@ -1,0 +1,72 @@
+<h4 class="linkNextPage" (click)="navigate()"> <- Voltar para o Pool </h4>
+
+
+<div class="flex">
+
+  <div class="fg-1">
+    <div *ngIf="doneGettingChords">
+      <!-- Digite o nome de um acorde: <input style="width: 130px;" (keyup)="buscar($event)" type="text"> -->  
+      Digite o nome de um acorde: <input [(ngModel)]="searchInput" (keydown)="preSearchPart2($event)" (keyup)="preSearch($event)" style="width: 133px;" type="text">
+      
+      <div *ngIf="titleOptions.length > 0" class="buscador-options">
+        <ul style="margin: 0; padding: 0;">
+          <li #chordTitleOptions [ngClass]="{'option-link-hover':isHovered[i]}" class="option-link" (click)="buscar($event)" (mouseenter)="limpar(i)" *ngFor="let option of titleOptions; let i = index">{{option}}</li>
+        </ul>
+      </div>
+
+    </div>
+
+
+    <p *ngIf="chordsFiltrados.length > 0">quantidade de acordes encontrados:{{ chordsFiltrados.length }} <span (click)="cleanSearchResults()" class="clean-chord-list">x limpar</span> </p>
+    <p *ngIf="errorMessage.length > 0">{{ errorMessage }} </p>
+    
+    <div #searchResult>
+        <div id="vejamos"></div>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="fg-3">
+    <!-- <div style="max-width: fit-content;" id="selecionados">
+    </div> -->
+
+   <!--  <svg #selecionados id="selecionados" class="selecionados" width="46.443932mm" height="50.022198mm" viewBox="0 0 46.443932 50.022198"></svg> -->
+    <svg #selecionados id="selecionados" class="selecionados" width="47.443932mm" height="55.188648mm" viewBox="0 0 47.443932 55.188648"></svg> 
+    
+    <!-- *ngIf="selecionados.children.length > 1" -->
+    <div style="margin-top:20px">
+      <button (click)="downloadChordChartAsSVG()">baixar SVG</button>
+
+      <div *ngIf="selecionados.children.length > 5">
+            Acordes por linha: 
+        <!-- <input (change)="setSVGchordChart($event)" type="number" max="6" min="3"> -->
+        
+        <input [(ngModel)]="inputAcordesPorLinha" (change)="setSVGchordChart()" name="acordesPorLinha" value=3 type="radio">3
+        <input [(ngModel)]="inputAcordesPorLinha" (change)="setSVGchordChart()" name="acordesPorLinha" value=4 type="radio">4
+        <input [(ngModel)]="inputAcordesPorLinha" (change)="setSVGchordChart()" name="acordesPorLinha" value=5 type="radio">5
+        <span *ngIf="selecionados.children.length > 6"><input [(ngModel)]="inputAcordesPorLinha" (change)="setSVGchordChart()" name="acordesPorLinha" value=6 type="radio">6</span>
+        
+      </div>
+  
+
+    </div>
+
+    
+  </div>
+
+ 
+
+
+
+</div>
+
+<!-- <button (click)="downloadChordChartAsPNG()">baixar PNG</button> -->
+<!-- <button (click)="downloadChordChartAsSVG()">baixar SVG</button> -->
+
+
+<!-- <div>
+  <img id="imagem" src="" alt="">
+</div> -->

@@ -1,0 +1,18 @@
+<div style="display: flex;">
+    <div style="flex-grow: 1">
+        <h2>Qtde de acordes: {{ chords.length }}</h2>
+    </div>
+
+    <div style="flex-grow: 1;text-align: right; margin-right: 200px; margin-top: 30px;">  
+        <h3 class="link" (click)="navigate()">Ir para o buscador -></h3>
+    </div>
+</div>
+
+<div *ngIf="loadingChords">
+    <img width="100px" src="../../assets/spinning-loading.gif" alt="">
+    <p style="font-size:20px">construindo acordes...</p>
+</div>
+
+
+
+<div class="inline" id="pool"></div>

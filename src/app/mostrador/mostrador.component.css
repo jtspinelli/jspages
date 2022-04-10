@@ -1,0 +1,8 @@
+.inline {
+    display: inline-block;
+}
+
+.link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
