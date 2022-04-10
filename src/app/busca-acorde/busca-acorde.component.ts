@@ -559,12 +559,14 @@ export class BuscaAcordeComponent implements OnInit {
 
     let url = "https://jonathanspinelli.com/_functions/AvenirFont"
 
-    this.http.get(url).toPromise().then((data:any) => {
+    this.selecionados.nativeElement.appendChild(style)
+
+   /*  this.http.get(url).toPromise().then((data:any) => {
       avenirBase64 = data.avenirBase64
      // style.innerHTML = "@font-face {font-family:'"+ fontFamily + "'; src:url('" + avenirBase64 + "')}"
      // style.innerHTML = "@font-face {font-family:'Avenir Next LT Pro Editada'; src:url('" + avenirBase64 + "')}"
       this.selecionados.nativeElement.appendChild(style) //enviar a tag <style> pro arquivo SVG
-    })
+    }) */
   }
 
 
