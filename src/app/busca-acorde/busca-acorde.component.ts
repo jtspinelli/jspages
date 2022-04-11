@@ -155,9 +155,6 @@ export class BuscaAcordeComponent implements OnInit {
             rect.setAttribute("style","fill-opacity:0;")
             rect.setAttribute("ry",".5")
             rect.setAttribute("height","97%")
-            /* if(qtde == 1) {
-              rect.setAttribute("x","1") //leve deslocada para o lado
-            } */
             
             rect.setAttribute("y","1") //leve deslocada para baixo
             selectedChord.appendChild(rect)
@@ -190,43 +187,49 @@ export class BuscaAcordeComponent implements OnInit {
 
             //AO CLICAR EM UM ACORDE SELECIONADO: REMOVER
             document.getElementById("selecionados")?.lastChild?.addEventListener("click", () => {
-              let index = this.chordsSelecionados.map(e => e.id).indexOf(chord.id)
-              this.chordsSelecionados.splice(index,1) //remove o acorde clicado do array de selecionados
-
-              document.getElementById(chord.id)?.remove() //remover o elemento <g> referente ao acorde clicado
-              this.cleanSearchResults() // limpar input de busca de acorde
-              this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
-              this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
-
-              //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
-              while(this.selecionados.nativeElement.children.length > 1){
-                this.selecionados.nativeElement.lastChild.remove()
+              if(this.inputAcordesPorLinha) {
+                //console.log("não fazer nada")
+              } else {
+                let index = this.chordsSelecionados.map(e => e.id).indexOf(chord.id)
+                this.chordsSelecionados.splice(index,1) //remove o acorde clicado do array de selecionados
+  
+                console.log("REMOVER: ", chord.id)
+                document.getElementById(chord.id)?.remove() //remover o elemento <g> referente ao acorde clicado
+                this.cleanSearchResults() // limpar input de busca de acorde
+                this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
+                this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
+  
+                //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
+                while(this.selecionados.nativeElement.children.length > 1){
+                  this.selecionados.nativeElement.lastChild.remove()
+                }
+                this.montarSVG()
+  
+                if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
+                 // console.log("OEEEEEEEEEE")
+                  this.setSVGchordChart()
+                }
+  
+                //console.log("CHORDS SELECIONADOS: ",this.chordsSelecionados.length)
+  
+                if(this.chordsSelecionados.length < 5 && parseInt(this.inputAcordesPorLinha) > 0) {
+                  //console.log("EEEEEPA")
+                  this.inputAcordesPorLinha = ''
+  
+                  //CONFIGURAR ALTURA DO SVG:
+                  let fatorAltura = 55.188648
+                  let height = fatorAltura * 1
+                  let widthW = 47.443932 * 4
+  
+                  this.selecionados.nativeElement.setAttribute("height", height + "mm")
+  
+                  //CONFIGURAR O VIEWBOX DO SVG
+                  let viewBox = this.selecionados.nativeElement.viewBox
+                  this.selecionados.nativeElement.setAttribute("viewBox", "0 0 " + widthW + " " + height)
+                  
+                }
               }
-              this.montarSVG()
 
-              if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
-                console.log("OEEEEEEEEEE")
-                this.setSVGchordChart()
-              }
-
-              console.log("CHORDS SELECIONADOS: ",this.chordsSelecionados.length)
-
-              if(this.chordsSelecionados.length < 5 && parseInt(this.inputAcordesPorLinha) > 0) {
-                console.log("EEEEEPA")
-                this.inputAcordesPorLinha = ''
-
-                //CONFIGURAR ALTURA DO SVG:
-                let fatorAltura = 55.188648
-                let height = fatorAltura * 1
-                let widthW = 47.443932 * 4
-
-                this.selecionados.nativeElement.setAttribute("height", height + "mm")
-
-                //CONFIGURAR O VIEWBOX DO SVG
-                let viewBox = this.selecionados.nativeElement.viewBox
-                this.selecionados.nativeElement.setAttribute("viewBox", "0 0 " + widthW + " " + height)
-                
-              }
 
 
 
@@ -336,14 +339,14 @@ export class BuscaAcordeComponent implements OnInit {
               this.montarSVG()
 
               if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
-                console.log("OEEEEEEEEEE")
+                //console.log("OEEEEEEEEEE")
                 this.setSVGchordChart()
               }
 
-              console.log("CHORDS SELECIONADOS: ",this.chordsSelecionados.length)
+             // console.log("CHORDS SELECIONADOS: ",this.chordsSelecionados.length)
 
               if(this.chordsSelecionados.length < 5 && parseInt(this.inputAcordesPorLinha) > 0) {
-                console.log("EEEEEPA")
+              //  console.log("EEEEEPA")
                 this.inputAcordesPorLinha = ''
 
                 //CONFIGURAR ALTURA DO SVG:
@@ -474,7 +477,7 @@ export class BuscaAcordeComponent implements OnInit {
     let fatorAltura = 55.188648
     let height = qtdeDeLinhas * fatorAltura
     if(qtdeDeLinhas > 0) {
-      console.log("QTDE DE LINHAS: ",qtdeDeLinhas)
+     // console.log("QTDE DE LINHAS: ",qtdeDeLinhas)
       this.selecionados.nativeElement.setAttribute("height", height + "mm")
 
       //CONFIGURAR O VIEWBOX DO SVG
