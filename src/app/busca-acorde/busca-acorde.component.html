@@ -38,7 +38,7 @@
     
     <!-- *ngIf="selecionados.children.length > 1" -->
     <div style="margin-top:20px">
-      <button (click)="downloadChordChartAsSVG()">baixar SVG</button>
+      <button *ngIf="chordsSelecionados.length > 0" (click)="downloadChordChartAsSVG()">baixar SVG</button>
 
       <div *ngIf="selecionados.children.length > 5">
             Acordes por linha: 
