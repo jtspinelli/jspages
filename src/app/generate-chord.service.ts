@@ -14,7 +14,8 @@ export class GenerateChordService {
   getChords() {
     let url = "https://jonathanspinelli.com/_functions/getChords"
     return this.http.get(url).toPromise().then((data:any) => {
-      return data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
+      //return data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
+      return data.resultado.items.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1)
     })
   }
 

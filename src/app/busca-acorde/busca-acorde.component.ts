@@ -37,7 +37,9 @@ export class BuscaAcordeComponent implements OnInit {
 
   getChords() {
     this.http.get(this.url).toPromise().then((data:any) => {
-      this.chords = data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
+      //this.chords = data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
+      this.chords = data.resultado.items.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1)
+      this.doneGettingChords = true
       this.doneGettingChords = true
 
     })
@@ -197,8 +199,8 @@ export class BuscaAcordeComponent implements OnInit {
                 document.getElementById(chord.id)?.remove() //remover o elemento <g> referente ao acorde clicado
                 this.cleanSearchResults() // limpar input de busca de acorde
                 this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
-                this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
-  
+                //this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
+                this.chords.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1) //reclassificar os acordes
                 //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
                 while(this.selecionados.nativeElement.children.length > 1){
                   this.selecionados.nativeElement.lastChild.remove()
