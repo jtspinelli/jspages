@@ -30,3 +30,16 @@
     font-family: monospace;
     font-size: 34px;
 }
+
+@media only screen and (max-width:1360px) {
+    .meus-projetos {
+        display: block;
+        width: 100%;
+        padding: 0;
+    }
+
+    .meus-projetos li {
+        margin-top: 20px;
+        width: auto;
+    }
+}
