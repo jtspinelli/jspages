@@ -575,8 +575,8 @@ export class BuscaAcordeComponent implements OnInit {
   }
 
 
-  navigate() {
-    this.router.navigate([''])
+  navigate(page:string) {
+    this.router.navigate(['/'+page])
   }
 
   ngOnInit(): void {
