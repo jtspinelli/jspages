@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChildren, EventEmitter, Output, ViewChild } from '@angular/core';
 import { GenerateChordService } from '../generate-chord.service';
 import { Router } from '@angular/router';
 
@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 export class CriadorComponent implements OnInit {
 
   @ViewChildren('footerSymbolsSelects') footerSymbolsSelects:any
+  @ViewChild('customChord') customChord:any
+  @Output() teste:EventEmitter<any> = new EventEmitter()
 
   dot1:string = ''
   dot2:string = ''
@@ -276,6 +278,39 @@ export class CriadorComponent implements OnInit {
     this.router.navigate([''+page])
   }
 
+  makeId(length:number) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+  }
+
+
+  emitirEvento(){
+
+    let qtde = this._generateChordService.qtde
+
+    let newChord_g = this._generateChordService.SVGchord_gerarAcorde_Group(qtde,'customChord_'+this.makeId(5),this.newChordTitle,this.dots,this.footerToSend,this.pestana,1)
+
+    let newChord = {g:newChord_g,structure:{
+      dedos:this.dots,
+      footer:this.footerToSend,
+      id:'customChord_'+this.makeId(5),
+      ordenadorMaiores:0,
+      pestana:this.pestana,
+      title:this.newChordTitle,
+      position:1
+    }}
+    if(this.position>1){
+      newChord.structure.position = this.position
+    }
+
+    this.teste.emit(newChord)
+  }
 
   constructor(private _generateChordService: GenerateChordService, private router:Router) { }
 

@@ -10,6 +10,8 @@ export class GenerateChordService {
 
   fontFamily:string = 'Avenir Atelie do Violão Bold'
 
+  qtde = 1
+
 
   getChords() {
     let url = "https://jonathanspinelli.com/_functions/getChords"

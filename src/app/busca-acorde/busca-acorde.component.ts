@@ -39,6 +39,7 @@ export class BuscaAcordeComponent implements OnInit {
     this.http.get(this.url).toPromise().then((data:any) => {
       //this.chords = data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
       this.chords = data.resultado.items.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1)
+      //console.log(this.chords)
       this.doneGettingChords = true
       this.doneGettingChords = true
 
@@ -161,8 +162,11 @@ export class BuscaAcordeComponent implements OnInit {
             rect.setAttribute("y","1") //leve deslocada para baixo
             selectedChord.appendChild(rect)
 
-            
+            //enviar acorde selecionado para o chord-chart
             document.getElementById("selecionados")?.appendChild(selectedChord)
+
+            //atualizar a quantidade de acordes na variável do GenerateChordService
+            this._generateChord.qtde = this.selecionados.nativeElement.children.length
 
             //arrumar largura do retângulo (<rect>) de cada acorde
             let width:string = ((100/qtde)-(3/qtde)).toString() + "%"
@@ -190,29 +194,34 @@ export class BuscaAcordeComponent implements OnInit {
             //AO CLICAR EM UM ACORDE SELECIONADO: REMOVER
             document.getElementById("selecionados")?.lastChild?.addEventListener("click", () => {
               if(this.inputAcordesPorLinha) {
-                //console.log("não fazer nada")
               } else {
                 let index = this.chordsSelecionados.map(e => e.id).indexOf(chord.id)
                 this.chordsSelecionados.splice(index,1) //remove o acorde clicado do array de selecionados
   
-                console.log("REMOVER: ", chord.id)
+                
                 document.getElementById(chord.id)?.remove() //remover o elemento <g> referente ao acorde clicado
                 this.cleanSearchResults() // limpar input de busca de acorde
-                this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
-                //this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
-                this.chords.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1) //reclassificar os acordes
+
+                if(chord._id){
+                  this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
+                  this.chords.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1) //reclassificar os acordes
+                }
+
+                
+                
+                this._generateChord.qtde = this.chordsSelecionados.length + 1
+
                 //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
                 while(this.selecionados.nativeElement.children.length > 1){
                   this.selecionados.nativeElement.lastChild.remove()
                 }
                 this.montarSVG()
+
+
   
                 if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
-                 // console.log("OEEEEEEEEEE")
                   this.setSVGchordChart()
                 }
-  
-                //console.log("CHORDS SELECIONADOS: ",this.chordsSelecionados.length)
   
                 if(this.chordsSelecionados.length < 5 && parseInt(this.inputAcordesPorLinha) > 0) {
                   //console.log("EEEEEPA")
@@ -272,8 +281,6 @@ export class BuscaAcordeComponent implements OnInit {
   }
 
   montarSVG(){
-
-   // console.log("qde de acordes pra remontar:",this.chordsSelecionados.length)
     this.chordsSelecionados.forEach((chord:any) => {
       let qtde:number = this.selecionados.nativeElement.children.length
 
@@ -331,24 +338,26 @@ export class BuscaAcordeComponent implements OnInit {
               
               document.getElementById(chord.id)?.remove() //remover o elemento <g> referente ao acorde clicado
               this.cleanSearchResults() // limpar input de busca de acorde
-              this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
-              this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
+              if(chord._id){
+                this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
+                this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
+              }
 
-               //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
-               while(this.selecionados.nativeElement.children.length > 1){
+              console.log(this.chordsSelecionados)
+              this._generateChord.qtde = this.chordsSelecionados.length + 1
+
+              //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
+              while(this.selecionados.nativeElement.children.length > 1){
                 this.selecionados.nativeElement.lastChild.remove()
               }
               this.montarSVG()
 
               if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
-                //console.log("OEEEEEEEEEE")
                 this.setSVGchordChart()
               }
 
-             // console.log("CHORDS SELECIONADOS: ",this.chordsSelecionados.length)
 
               if(this.chordsSelecionados.length < 5 && parseInt(this.inputAcordesPorLinha) > 0) {
-              //  console.log("EEEEEPA")
                 this.inputAcordesPorLinha = ''
 
                 //CONFIGURAR ALTURA DO SVG:
