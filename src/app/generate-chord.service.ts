@@ -1017,6 +1017,106 @@ export class GenerateChordService {
   ////////////////////////////////////////////////////////////
 
 
+  SVGchord_footerOnly(){
+    let footerSymbols = [
+     {
+       name:'open circle',
+       attributes:{
+         labels:['cx','cy','r','style'],
+         values:['2.3515','2.3515','2.274132',
+         'fill:none;stroke:#333333;stroke-width:0.154736;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;paint-order:markers fill stroke']
+       }
+      },
+     {
+       name:'filled circle',
+       attributes:{
+         labels:['cx','cy','r','style'],
+         values:['2.3515','2.3515','2.274132',
+         'fill:#333333;stroke:#333333;stroke-width:0.154736;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;paint-order:markers fill stroke']
+        }
+      },
+     {
+       name:'x',
+       attributes:{
+        labels:['d','style'],
+        values:['M 3.06618,2.3521202 4.565485,0.85418983 c 0.03996,-0.04 0.03996,-0.10335 0,-0.14194 l -0.570509,-0.57051 c -0.0193,-0.0193 -0.04548,-0.0303 -0.07166,-0.0303 -0.02755,0 -0.05237,0.011 -0.07166,0.0303 L 2.350972,1.6382898 0.85166603,0.14173983 c -0.03858,-0.0386 -0.104729,-0.0386 -0.143316,0 l -0.570505,0.57051 c -0.0193,0.0179 -0.0303,0.0441 -0.0303,0.0703 0,0.0276 0.01101,0.0524 0.0303,0.0717 L 1.63715,2.3521802 0.13784503,3.8487302 c -0.0193,0.0193 -0.0303,0.0441 -0.0303,0.0717 0,0.0262 0.01101,0.0524 0.0303,0.0717 l 0.570505,0.56913 c 0.02067,0.0207 0.04548,0.0303 0.07166,0.0303 0.02618,0 0.05237,-0.01 0.07166,-0.0303 l 1.49930597,-1.49655 1.500684,1.49655 c 0.03996,0.04 0.103354,0.04 0.143316,0 l 0.570509,-0.56913 c 0.03996,-0.04 0.03996,-0.10335 0,-0.14331 z m 0,0',
+        'fill:#333333;fill-opacity:1;stroke-width:0.352778']
+       }
+      }
+    ]
+
+    let footersSymbolsSVG: SVGSVGElement[] = []
+
+    footerSymbols.forEach(symbol => {
+
+      let svgInfos = {
+        attributes:['xmlns:xlink','xmlns','width','height','viewBox','id'],
+        values:[
+          'http://www.w3.org/1999/xlink',
+          'http://www.w3.org/2000/svg',
+          '4.7030001mm',
+          '4.7030001mm',
+          '0 0 4.7030001 4.703',
+          symbol.name
+        ]
+      }
+
+      //CRIAR ELEMENTO <svg>
+      let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      
+      //setar os atributos do elemento <svg>
+      for(var i=0; i<svgInfos.attributes.length; i++) {
+        svg.setAttribute(svgInfos.attributes[i],svgInfos.values[i])
+      }
+
+      if(symbol.name == 'x'){
+        //CRIA ELEMENTO <path>
+        let path = document.createElementNS("http://www.w3.org/2000/svg",'path')
+
+        //cria variável com labels e values dos atributos desse path (desenho de um x)
+        let pathLabels = symbol.attributes.labels
+        let pathValues = symbol.attributes.values
+
+        //adiciona os atributos no elemento <path>
+        for(var a=0; a<pathLabels.length; a++) {
+          path.setAttribute(pathLabels[a],pathValues[a])
+        }
+
+        //adiciona o elemento no <svg>
+        svg.appendChild(path)
+
+        //envia o <svg> para o array de símbolos svg do footer
+        footersSymbolsSVG.push(svg)
+
+      } else {
+        //CRIA ELEMENTO <circle>
+        let circle = document.createElementNS("http://www.w3.org/2000/svg","circle")
+
+        //cria variável com os labels e values dos circles
+        let circleLabels = symbol.attributes.labels
+        let circleValues = symbol.attributes.values
+
+        //adiciona os atributos no elemento <path>
+        for(var c=0; c<circleLabels.length; c++) {
+          circle.setAttribute(circleLabels[c],circleValues[c])
+        }
+
+        //adiciona o elemento no <svg>
+        svg.appendChild(circle)
+
+        //envia o <svg> para o array de símbolos svg do footer
+        footersSymbolsSVG.push(svg)
+
+      }
+
+      
+
+    })
+
+    return(footersSymbolsSVG)
+
+  }
+
 
 
 

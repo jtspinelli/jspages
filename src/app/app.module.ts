@@ -8,14 +8,16 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BuscaAcordeComponent } from './busca-acorde/busca-acorde.component';
 import { PoolComponent } from './pool/pool.component';
-import { MostradorComponent } from './mostrador/mostrador.component'
+import { MostradorComponent } from './mostrador/mostrador.component';
+import { CriadorComponent } from './criador/criador.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     BuscaAcordeComponent,
     PoolComponent,
-    MostradorComponent
+    MostradorComponent,
+    CriadorComponent
   ],
   imports: [
     BrowserModule,

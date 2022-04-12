@@ -30,8 +30,8 @@ export class MostradorComponent implements OnInit {
     })
   }
 
-  navigate(){
-    this.router.navigate(['/buscador'])
+  navigate(page:string){
+    this.router.navigate(['/' + page])
   }
 
   ngOnInit(): void {
