@@ -9,7 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { BuscaAcordeComponent } from './busca-acorde/busca-acorde.component';
 import { PoolComponent } from './pool/pool.component';
 import { MostradorComponent } from './mostrador/mostrador.component';
-import { CriadorComponent } from './criador/criador.component'
+import { CriadorComponent } from './criador/criador.component';
+import { LandingPageComponent } from './landing-page/landing-page.component'
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { CriadorComponent } from './criador/criador.component'
     BuscaAcordeComponent,
     PoolComponent,
     MostradorComponent,
-    CriadorComponent
+    CriadorComponent,
+    LandingPageComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,32 @@
+.meus-projetos {
+    font-size: 30px;
+    list-style: none;
+    display: flex;
+    width: 50%;
+    justify-content:space-evenly;
+}
+
+.meus-projetos li {
+    cursor: pointer;
+    padding: 10px 30px;
+    width: 100%;
+    margin-left: 10px;
+    text-align: center;
+    height: 50px;
+    padding-top: 26px;
+    border:1px solid #c0c0c0;
+    border-radius: 6px;
+    font-family: monospace;
+    color: #505050;
+    font-size: 24px;
+}
+
+.meus-projetos li:hover {
+    background-color: rgb(249, 249, 249);
+}
+
+.title{
+    color: #d83828;
+    font-family: monospace;
+    font-size: 34px;
+}
