@@ -11,7 +11,8 @@ import { PoolComponent } from './pool/pool.component';
 import { MostradorComponent } from './mostrador/mostrador.component';
 import { CriadorComponent } from './criador/criador.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
-import { ChordChartGenComponent } from './chord-chart-gen/chord-chart-gen.component'
+import { ChordChartGenComponent } from './chord-chart-gen/chord-chart-gen.component';
+import { CriadorVisualComponent } from './criador-visual/criador-visual.component'
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ChordChartGenComponent } from './chord-chart-gen/chord-chart-gen.compon
     MostradorComponent,
     CriadorComponent,
     LandingPageComponent,
-    ChordChartGenComponent
+    ChordChartGenComponent,
+    CriadorVisualComponent
   ],
   imports: [
     BrowserModule,

@@ -15,12 +15,19 @@ export class MostradorComponent implements OnInit {
 
   loadingChords:boolean = true
 
+  errorMessageTitle:string = ''
+  errorMessage:string = ''
+
   @ViewChild("chordsPool") chordsPool:any
 
   getChords() {
     this._generateChordsService.getChords().then(data => {
       this.chords = data
       this.printarAcordes()
+      this.loadingChords = false
+    }).catch(err => {
+      this.errorMessageTitle = "Erro desconhecido ao buscar acordes no database =/"
+      this.errorMessage = "Aguarde uns instantes e tente novamente atualizando a página."
       this.loadingChords = false
     })
   }

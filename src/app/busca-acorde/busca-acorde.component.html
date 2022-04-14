@@ -9,8 +9,18 @@
       <div>
         ...carregando lista de acordes
       </div>
+
     </div>
-    <div *ngIf="doneGettingChords">
+
+    <div *ngIf="errorMessageTitle.length > 0">
+      <p style="font-size:15px; margin:0 0 5px">{{errorMessageTitle}}</p>
+      <p style="font-size:15px; margin:0">{{errorMessage}}</p>
+      <img style="width:100px; margin-top: 15px;" src="assets/face-palm.jpg" alt="">
+    </div>
+
+
+
+    <div *ngIf="doneGettingChords && errorMessageTitle.length == 0">
       <!-- Digite o nome de um acorde: <input style="width: 130px;" (keyup)="buscar($event)" type="text"> -->  
       Digite o nome de um acorde: <input [(ngModel)]="searchInput" (keydown)="preSearchPart2($event)" (keyup)="preSearch($event)" style="width: 133px;" type="text">
       
@@ -24,7 +34,7 @@
 
 
     <p *ngIf="chordsFiltrados.length > 0">quantidade de acordes encontrados:{{ chordsFiltrados.length }} <span (click)="cleanSearchResults()" class="clean-chord-list">x limpar</span> </p>
-    <p *ngIf="errorMessage.length > 0">{{ errorMessage }} </p>
+   
     
     <div #searchResult>
         <div id="vejamos"></div>

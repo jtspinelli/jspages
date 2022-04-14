@@ -59,3 +59,49 @@
     fill:brown; */
     cursor: pointer;
 }
+
+.teste {
+    background-color: rgb(255, 255, 255);
+}
+
+.trans-cell {
+    background: transparent;
+}
+
+.trans-cell:hover {
+    cursor: pointer;
+}
+
+.dot-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dot {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+}
+
+.dot-container:hover .dot {
+    background-color: gainsboro;
+    cursor: pointer;
+}
+
+.selected-dot {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background-color: black;
+}
+
+.dot-container:hover .selected-dot {
+    cursor: pointer;
+}

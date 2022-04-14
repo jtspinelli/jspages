@@ -1,0 +1,27 @@
+.diagram {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(5,1fr);
+    grid-template-rows: repeat(4,1fr);
+    background-color: rgb(97, 97, 97);
+    width: 200px;
+    height: 250px;
+    gap: 3px;
+    padding: 3px;
+    margin-left: 20px;
+    box-sizing: border-box;
+}
+
+.diagrama-recuado {
+    left: -20px;
+    display: grid;
+    position: absolute;
+    grid-template-columns: repeat(6,1fr);
+    grid-template-rows: repeat(4,58.75px);
+    width: 240px;
+    height: 247px;
+    row-gap: 3px;
+    padding: 3px 3px 0;
+    box-sizing: border-box;
+
+}

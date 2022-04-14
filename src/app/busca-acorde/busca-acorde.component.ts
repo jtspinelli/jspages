@@ -16,6 +16,8 @@ export class BuscaAcordeComponent implements OnInit {
   @ViewChildren("chordTitleOptions") chordTitleOptions:any
   @ViewChild("selecionados") selecionados:any
 
+  
+
   url:string = "https://jonathanspinelli.com/_functions/getChords"
   chords:any[] = []
   chordsFiltrados:any[] = []
@@ -23,7 +25,8 @@ export class BuscaAcordeComponent implements OnInit {
 
   inputAcordesPorLinha = ""
 
-  errorMessage:string = ""
+  errorMessageTitle:string = ''
+  errorMessage:string = ''
 
   doneGettingChords:boolean = false
 
@@ -41,6 +44,10 @@ export class BuscaAcordeComponent implements OnInit {
       this.chords = data.resultado.items.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1)
       //console.log(this.chords)
       this.doneGettingChords = true
+    }).catch(err => {
+      this.doneGettingChords = true
+      this.errorMessageTitle = "Erro desconhecido ao buscar acordes no database =/"
+      this.errorMessage = "Aguarde uns instantes e tente novamente atualizando a página."
     })
   }
 
