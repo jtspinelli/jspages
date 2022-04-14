@@ -1,41 +1,54 @@
-<div style="display: flex; justify-content: space-between;">
-    <h1>Criador de Acorde</h1>
-    <!-- <h3 (click)="navigate('pool')" class="link" style="margin-right: 200px;">← voltar para o pool</h3> -->
+
+<div style="display:flex; margin-top: 50px; padding: 10px;">
+    <div style="padding:20px; border:1px solid; border-radius:6px">
+        <div style="display: flex; justify-content: space-between;">
+            <h1 style="margin-top:6px">Criador de Acorde</h1>
+            <!-- <h3 (click)="navigate('pool')" class="link" style="margin-right: 200px;">← voltar para o pool</h3> -->
+        </div>
+
+
+
+        <div>
+            <input class="cr-inputs" (keyup)="setarTitle()" [(ngModel)]='newChordTitle' type="text" placeholder="cifra do acorde">
+            <input class="cr-inputs" style="margin-left:97px; width: 65px;" (keyup)="setarPosition()" [(ngModel)]="positionInput" maxlength="2" type="text" placeholder="posição">
+        </div>
+
+        <div style="margin-bottom:10px">
+            <input class="cr-inputs dots" (keyup)="setarDots()" [(ngModel)]="dot1" type="text" maxlength="5" placeholder="ponto 1">
+            <input class="cr-inputs dots" style="margin-left:5px" (keyup)="setarDots()" [(ngModel)]="dot2" type="text" maxlength="5" placeholder="ponto 2">
+            <input class="cr-inputs dots" style="margin: 0 5px" (keyup)="setarDots()" [(ngModel)]="dot3" type="text" maxlength="5" placeholder="ponto 3">
+            <input class="cr-inputs dots" (keyup)="setarDots()" [(ngModel)]="dot4" type="text" maxlength="5" placeholder="ponto 4">
+            <input class="cr-inputs" style="margin-left:15px; width:50px;" [(ngModel)]="pestanaInput" (keyup)="setarPestana()" type="text" placeholder="pestana">
+        </div>
+
+
+
+        <div>
+            
+            
+        </div>
+
+        <div style="max-width:fit-content; padding:5px; border:1px solid gray; border-radius: 3px;">
+            <select class="font-20 footer-select" (change)="setarFooter($event)" #footerSymbolsSelects *ngFor="let string of stringsIds; let i= index" name="footer" id={{string}}>
+                <option [selected]="symbol == '○'" *ngFor="let symbol of footerSymbols" [value]="symbol">{{symbol}}</option>
+            </select>   
+        </div>
+
+        <div style="margin-top:10px">
+            Clique no acorde para adicioná-lo à lista de selecionados.
+            <!--  <button (click)="downloadChordAsSVG()">baixar acorde</button> -->
+           <!--  <button (click)="emitirEvento()">adicionar</button> -->
+         </div>
+    </div>
+
+    <div (click)="emitirEvento()" style="margin-left:10px" class="destacar">
+        <div #customChord id="acorde"></div>
+    </div>
 </div>
 
 
-
-<div>
-    <input (keyup)="setarTitle()" [(ngModel)]='newChordTitle' type="text" placeholder="cifra do acorde">
-</div>
-
-<input (keyup)="setarDots()" [(ngModel)]="dot1" type="text" maxlength="5" placeholder="ponto 1">
-<input (keyup)="setarDots()" [(ngModel)]="dot2" type="text" maxlength="5" placeholder="ponto 2">
-<input (keyup)="setarDots()" [(ngModel)]="dot3" type="text" maxlength="5" placeholder="ponto 3">
-<input (keyup)="setarDots()" [(ngModel)]="dot4" type="text" maxlength="5" placeholder="ponto 4">
-
-<div>
-    <input [(ngModel)]="pestanaInput" (keyup)="setarPestana()" type="text" placeholder="pestana">
-</div>
-
-<div>
-    <input (keyup)="setarPosition()" [(ngModel)]="positionInput" maxlength="2" type="text" placeholder="posição">
-</div>
-
-<div>
-    <select class="font-20" (change)="setarFooter($event)" #footerSymbolsSelects *ngFor="let string of stringsIds; let i= index" name="footer" id={{string}}>
-        <option [selected]="symbol == '○'" *ngFor="let symbol of footerSymbols" [value]="symbol">{{symbol}}</option>
-    </select>   
-</div>
  
 
 
-<div #customChord id="acorde">
 
 
-</div>
-
-<div>
-   <!--  <button (click)="downloadChordAsSVG()">baixar acorde</button> -->
-   <button (click)="emitirEvento()">adicionar</button>
-</div>

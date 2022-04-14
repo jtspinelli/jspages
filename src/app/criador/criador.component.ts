@@ -274,6 +274,7 @@ export class CriadorComponent implements OnInit {
     }
   }
 
+
   navigate(page:string){
     this.router.navigate([''+page])
   }

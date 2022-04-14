@@ -53,7 +53,7 @@ export class GenerateChordService {
      svg1.setAttribute("height","55.188648mm") //era originalmente 50...
      svg1.setAttribute("viewBox","0 0 47.443932 55.188648")
      svg1.setAttribute("id",id)
-     svg1.classList.add("destacar")
+    // svg1.classList.add("destacar")
     ////////////////////////////////////////////////////////////////////////////
 
 

@@ -41,8 +41,6 @@ export class BuscaAcordeComponent implements OnInit {
       this.chords = data.resultado.items.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1)
       //console.log(this.chords)
       this.doneGettingChords = true
-      this.doneGettingChords = true
-
     })
   }
 
@@ -127,6 +125,8 @@ export class BuscaAcordeComponent implements OnInit {
           //CRIAR SVG DO ACORDE USANDO FUNÇÃO DO SERVIÇO GenerateChordService
           let SVGchord = this._generateChord.SVGchord_gerarAcorde(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
           document.getElementById("vejamos")?.appendChild(SVGchord) // e jogar para a div com id="vejamos"
+
+          this.searchResults._results[0].nativeElement.children[0].lastChild.classList.add('destacar')
 
           //AO CLICAR EM UM ACORDE ENCONTRADO: 'SELECIONAR' o acorde (enviar para o Chord Chart)
           document.getElementById("vejamos")?.lastChild?.addEventListener("click",() => {

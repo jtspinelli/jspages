@@ -6,3 +6,28 @@
     cursor: pointer;
     text-decoration: underline;
 }
+
+.cr-inputs {
+    padding: 4px;
+    margin: 3px 0px 3px 0;
+}
+
+.dots {
+    width: 50px;
+}
+
+.footer-select {
+    width: 43px;
+    text-align: center;
+    margin: 0 2px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.footer-select:hover {
+    border: 1px solid;
+}
+
+.footer-select:focus-visible {
+    outline: none;
+}

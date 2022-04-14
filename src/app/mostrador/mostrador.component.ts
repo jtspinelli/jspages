@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GenerateChordService } from '../generate-chord.service';
 import { Router } from '@angular/router';
 
@@ -15,6 +15,8 @@ export class MostradorComponent implements OnInit {
 
   loadingChords:boolean = true
 
+  @ViewChild("chordsPool") chordsPool:any
+
   getChords() {
     this._generateChordsService.getChords().then(data => {
       this.chords = data
@@ -27,6 +29,8 @@ export class MostradorComponent implements OnInit {
     this.chords.forEach((chord:any) => {
       let SVG = this._generateChordsService.SVGchord_gerarAcorde(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
       document.getElementById("pool")?.appendChild(SVG)
+      this.chordsPool.nativeElement.lastChild.classList.add('destacar')
+      
     })
   }
 

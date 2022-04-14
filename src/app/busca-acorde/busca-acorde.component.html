@@ -4,6 +4,12 @@
 <div class="flex">
 
   <div class="fg-1">
+    <div *ngIf="!doneGettingChords">
+      <img width="50px" src="assets/spinning-loading.gif" alt="">
+      <div>
+        ...carregando lista de acordes
+      </div>
+    </div>
     <div *ngIf="doneGettingChords">
       <!-- Digite o nome de um acorde: <input style="width: 130px;" (keyup)="buscar($event)" type="text"> -->  
       Digite o nome de um acorde: <input [(ngModel)]="searchInput" (keydown)="preSearchPart2($event)" (keyup)="preSearch($event)" style="width: 133px;" type="text">
@@ -34,7 +40,11 @@
     </div> -->
 
    <!--  <svg #selecionados id="selecionados" class="selecionados" width="46.443932mm" height="50.022198mm" viewBox="0 0 46.443932 50.022198"></svg> -->
-    <svg #selecionados id="selecionados" class="selecionados" width="47.443932mm" height="55.188648mm" viewBox="0 0 47.443932 55.188648"></svg> 
+   <div style="margin-bottom:10px">
+     Selecionados para exportar<span *ngIf="chordsSelecionados.length > 0"> (clique em um acorde para removê-lo)</span>:
+   </div>
+   
+   <svg #selecionados id="selecionados" class="selecionados" width="47.443932mm" height="55.188648mm" viewBox="0 0 47.443932 55.188648"></svg> 
     
     <!-- *ngIf="selecionados.children.length > 1" -->
     <div style="margin-top:20px">
