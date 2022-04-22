@@ -12,7 +12,8 @@ import { MostradorComponent } from './mostrador/mostrador.component';
 import { CriadorComponent } from './criador/criador.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { ChordChartGenComponent } from './chord-chart-gen/chord-chart-gen.component';
-import { CriadorVisualComponent } from './criador-visual/criador-visual.component'
+import { CriadorVisualComponent } from './criador-visual/criador-visual.component';
+import { CriadorClickComponent } from './criador-click/criador-click.component'
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { CriadorVisualComponent } from './criador-visual/criador-visual.componen
     CriadorComponent,
     LandingPageComponent,
     ChordChartGenComponent,
-    CriadorVisualComponent
+    CriadorVisualComponent,
+    CriadorClickComponent
   ],
   imports: [
     BrowserModule,

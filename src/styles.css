@@ -87,6 +87,9 @@
     border-radius: 50%;
     border: none;
     background-color: transparent;
+    /* -webkit-user-drag: element; */
+    /*pointer-events: none;*/
+    user-select: none;
 }
 
 .dot-container:hover .dot {
@@ -102,6 +105,234 @@
     background-color: black;
 }
 
+.pestana {
+    border-radius: 20px;
+    width: 100%;
+}
+
 .dot-container:hover .selected-dot {
     cursor: pointer;
+}
+
+.dragable {
+    -webkit-user-drag: none;
+    cursor: pointer;
+    user-select: none;
+   /*  background-color: rgba(245, 245, 220, 0.479); */
+}
+
+.teste2{
+    position: relative;
+    -webkit-user-drag: none;
+   
+}
+
+.teste2::after {
+    content: '';
+    background-color: rgb(244 241 241);
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    top: calc(50% - 20px);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.teste3{
+    position: relative;
+    -webkit-user-drag: none;
+   
+}
+
+.teste3::after {
+    content: '';
+    background-color: rgb(244 241 241);
+    border-radius: 0px;
+    width: 40px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    top: calc(50% - 20px);
+}
+
+.teste4{
+    position: relative;
+    -webkit-user-drag: none;
+   
+}
+
+.teste4::after {
+    content: '';
+    background-color: rgb(244 241 241);
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    top: calc(50% - 20px);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.diagram .cell {
+    background-color: white;
+}
+
+.shadow-diagram {
+    display: grid;
+    position: absolute;
+    grid-template-columns: repeat(6,1fr);
+    width: 246px;
+    left: -22.3px;
+    row-gap: 3px;
+    padding: 3px 3px 0;
+    box-sizing: border-box;
+    pointer-events: all;
+}
+
+.shadow-container {
+    background-color: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.shadow-container-dot {
+    background-color: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-drag: none;
+    user-select: none;
+
+}
+
+.shadow-container-dot::after {
+  content: '';
+  background-color: rgb(255, 218, 218);
+  border-radius: 20px;
+  height: 40px;
+  width: 40px;
+  display: block;
+  position: absolute;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+}
+
+.shadow-container.cap::after {
+    content: '';
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    top: calc(50% - 20px);
+    border-radius: 20px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.shadow-container.mid::after {
+    content: '';
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    top: calc(50% - 20px);
+    border-radius: 0px;
+}
+
+.shadow-container.end::after {
+    content: '';
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    top: calc(50% - 20px);
+    border-radius: 20px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.finger-diagram {
+    display: grid;
+    position: absolute;
+    grid-template-columns: repeat(6,1fr);
+    width: 246px;
+    left: -22.3px;
+    row-gap: 3px;
+    padding: 3px 3px 0;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.fgr-span1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    grid-column: span 1;
+    position: relative;
+}
+
+.fgr-span2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    grid-column: span 2;
+    position: relative;
+}
+
+.fgr-span3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    grid-column: span 3;
+    position: relative;
+}
+
+.fgr-span4 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    grid-column: span 4;
+    position: relative;
+}
+
+.fgr-span5 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    grid-column: span 5;
+    position: relative;
+}
+
+.fgr-span6 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    grid-column: span 6;
+    position: relative;
+}
+
+.fgr-dot {
+    width: 40px;
+    height: 40px;
+    background-color: black;
+    border-radius: 20px;
+    border: none;
 }

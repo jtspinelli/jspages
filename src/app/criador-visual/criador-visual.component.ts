@@ -9,9 +9,14 @@ export class CriadorVisualComponent implements OnInit {
 
   @ViewChild("diagram") diagram:any
   @ViewChild("internDiagram") internDiagram:any
+  @ViewChild("internDragableDiagram") internDragableDiagram:any
   @ViewChildren("footerElement") footerElement:any
 
-  constructor() { }
+  constructor() { 
+    document.addEventListener("mouseup",()=>{
+      this.mouseIsDown = false
+    })
+  }
 
   noDeCasas:number = 4
   pixelsPorCasa:number = 60
@@ -40,6 +45,10 @@ export class CriadorVisualComponent implements OnInit {
     }
 ]
 
+  pestanaInicioIndex = 0
+  pestanaFinalIndex = 0
+  pestanaSpan = 0
+
   createCells() { 
 
     //setar alturas dos diagramas conforme a quantidade de casas:
@@ -55,36 +64,232 @@ export class CriadorVisualComponent implements OnInit {
 
     let count2 = 0
     while(count2 < this.noDeCasas * 6){
-      let cell = document.createElement("div")
-      let dotContainer = document.createElement("div")
-      dotContainer.classList.add("dot-container")
+      //MONTAR O INTERNDIAGRAM:
+        let dotContainer = document.createElement("div")
+        dotContainer.classList.add("dot-container")
 
 
-      //preencher as células com grey dots (buttons) que aparecem on hover
-      let dot = document.createElement("button")
-      dot.classList.add("dot")
-      dotContainer.appendChild(dot)
-      cell.classList.add("trans-cell")
-      cell.appendChild(dotContainer)
-      this.internDiagram.nativeElement.appendChild(cell)
-      count2 = count2 + 1
+        //preencher as células com grey dots (buttons) que aparecem on hover
+        let dot = document.createElement("button")
+        dot.classList.add("dot")
+        dotContainer.appendChild(dot)
+        let casaa = Math.floor(count2/6)
+        let cordaa = count2-(6*casaa)
+        dotContainer.setAttribute("corda-index",cordaa.toString())
+        dotContainer.setAttribute("casa-index",casaa.toString())
+        dotContainer.classList.add("markable")
+
+        dotContainer.addEventListener("mousedown",(event:any) => {
+          let overFret = event.target.getAttribute("casa-index")
+          if(event.target.localName == "button"){
+            overFret = event.target.parentElement.getAttribute("casa-index")
+          }
+          for(var i = 0; i < document.getElementsByClassName("dragable").length; i++){
+
+            if(document.getElementsByClassName("dragable")[i].getAttribute("casa-index") == overFret){
+              document.getElementsByClassName("dragable")[i].classList.remove("teste2")
+              document.getElementsByClassName("dragable")[i].classList.remove("teste3")
+              document.getElementsByClassName("dragable")[i].classList.remove("teste4")
+            }
+  
+          }
 
 
-      //AO CLICAR EM UM GREY DOT:
-      dotContainer.addEventListener("click",(event:any) => {
+          this.mouseIsDown = true   
+         
+
+          this.clickedString = parseInt(event.target.getAttribute("corda-index"))
+          this.clickedFret = parseInt(event.target.getAttribute("casa-index"))
+
+          if(event.target.localName == "button"){
+            this.clickedString = parseInt(event.target.parentElement.getAttribute("corda-index"))
+            this.clickedFret = parseInt(event.target.parentElement.getAttribute("casa-index"))
+          }
+
+        })
+
+        dotContainer.addEventListener("mouseup",()=> {
+          this.mouseIsDown = false
+          console.log(this.pestanaInicioIndex, this.pestanaFinalIndex)
+          document.getElementsByClassName("markable")[this.pestanaInicioIndex].setAttribute("style","grid-column:span 3;")
+         // document.getElementsByClassName("markable")[this.pestanaInicioIndex].children[0].setAttribute("style","width:100%;border-radius:20px;background-color:black;")
+         document.getElementsByClassName("markable")[this.pestanaInicioIndex].children[0].classList.add("selected-dot")
+         document.getElementsByClassName("markable")[this.pestanaInicioIndex].children[0].classList.add("pestana")
+          for(var i = 0; i < document.getElementsByClassName("dragable").length; i++){
+
+            if(document.getElementsByClassName("dragable")[i].getAttribute("casa-index") == this.clickedFret.toString()){
+              document.getElementsByClassName("dragable")[i].classList.remove("teste2")
+              document.getElementsByClassName("dragable")[i].classList.remove("teste3")
+              document.getElementsByClassName("dragable")[i].classList.remove("teste4")
+            }
+  
+          }
+
+        })
+
+        dotContainer.addEventListener("mouseover",(event:any) => {
+          
+          if(this.mouseIsDown){
+            let overStringIndex = parseInt(event.target.getAttribute("corda-index")) 
+            let overFretIndex = parseInt(event.target.getAttribute("casa-index")) 
+
+            if(event.target.localName == 'button'){
+              overStringIndex = parseInt(event.target.parentElement.getAttribute("corda-index")) 
+              overFretIndex = parseInt(event.target.parentElement.getAttribute("casa-index"))
+            }
+
+            
+
+            let divInicialIndex = this.clickedString+6*this.clickedFret
+            this.pestanaInicioIndex = divInicialIndex
+            let diff = overStringIndex - this.clickedString
+            this.pestanaFinalIndex = divInicialIndex + diff
+            this.pestanaSpan = diff
+            if(overStringIndex == this.clickedString){
+              
+              //event.target.classList.remove("teste2")
+              document.getElementsByClassName("dragable")[divInicialIndex+diff].classList.remove("teste2")
+              document.getElementsByClassName("dragable")[divInicialIndex+diff+1].classList.remove("teste4")
+            //  document.getElementsByClassName("dragable")[divInicialIndex+1].classList.remove("teste4")
+
+            } else {
+              if(overStringIndex > this.clickedString && this.clickedFret == overFretIndex){
+               
+               let taPintada = document.getElementsByClassName("dragable")[divInicialIndex+diff].classList.value.includes("teste2") || document.getElementsByClassName("dragable")[divInicialIndex+diff].classList.value.includes("teste3")
+
+               document.getElementsByClassName("dragable")[divInicialIndex].classList.add("teste2")
+              
+                if(!taPintada){
+                  for(var i = 1; i < (overStringIndex-this.clickedString); i++) {
+              
+                    document.getElementsByClassName("dragable")[divInicialIndex+i].classList.remove("teste4")
+                    document.getElementsByClassName("dragable")[divInicialIndex+i].classList.add("teste3")
+                  
+
+                  }
+                } else {
+                  document.getElementsByClassName("dragable")[divInicialIndex+(overStringIndex-this.clickedString)].classList.remove("teste3")
+                  document.getElementsByClassName("dragable")[divInicialIndex+(overStringIndex-this.clickedString)+1].classList.remove("teste4")
+                }
+
+                //event.target.classList.add("teste4")
+                document.getElementsByClassName("dragable")[divInicialIndex+diff].classList.add("teste4")
+              
+              }
+
+            }
+
+            
+          }
+          
         
-        this.setDot(event) //colocar ou remover (caso já tenha) o black dot
-
-        //LÓGICA PARA PEGAR INFO DOS DEDOS:
-        this.getDedos()
+        })
+  
         
+        //cell.appendChild(dotContainer)
+        this.internDiagram.nativeElement.appendChild(dotContainer)
+        
+
+        //AO CLICAR EM UM GREY DOT:
+        dotContainer.addEventListener("click",(event:any) => {
+          
+          this.setDot(event) //colocar ou remover (caso já tenha) o black dot
+
+          //LÓGICA PARA PEGAR INFO DOS DEDOS:
+          this.getDedos()
+          
+        })
+      ////////////////////////////////////////////////////////////////////////////////
+      
+      //MONTAR O INTERNDRAGABLE DIAGRAM:
+      let dragContainer = document.createElement("div")
+      dragContainer.classList.add("dragable")
+      dragContainer.classList.add("trans-cell")
+      let casa = Math.floor(count2/6)
+      let corda = count2-(6*casa)
+      dragContainer.setAttribute("corda-index",corda.toString())
+      dragContainer.setAttribute("casa-index",casa.toString())
+
+/*       dragContainer.addEventListener("mousedown",(event:any)=> {
+        for(var i = 0; i < document.getElementsByClassName("dragable").length; i++){
+          if(document.getElementsByClassName("dragable")[i].getAttribute("casa-index") == event.target.getAttribute("casa-index")){
+            document.getElementsByClassName("dragable")[i].classList.remove("teste2")
+            document.getElementsByClassName("dragable")[i].classList.remove("teste3")
+            document.getElementsByClassName("dragable")[i].classList.remove("teste4")
+          }
+
+        }
+        this.mouseIsDown = true
+        this.clickedString = parseInt(event.target.getAttribute("corda-index"))
+        this.clickedFret = parseInt(event.target.getAttribute("casa-index"))
       })
 
- 
+      dragContainer.addEventListener("mouseup",()=> {
+        this.mouseIsDown = false
+      })
+
+      dragContainer.addEventListener("mouseover",(event:any)=>{
+        
+        let overStringIndex = parseInt(event.target.getAttribute("corda-index")) 
+        let overFretIndex = parseInt(event.target.getAttribute("casa-index")) 
+        let divInicialIndex = this.clickedString+6*this.clickedFret
+
+
+        if(this.mouseIsDown){
+
+          if(overStringIndex == this.clickedString){
+
+            event.target.classList.remove("teste2")
+            document.getElementsByClassName("dragable")[divInicialIndex+1].classList.remove("teste4")
+
+          } else {
+
+            if(overStringIndex > this.clickedString && this.clickedFret == overFretIndex) {
+              let taPintada = event.target.classList.value.includes("teste3") || event.target.classList.value.includes("teste2")
+    
+            
+              document.getElementsByClassName("dragable")[divInicialIndex].classList.add("teste2")
+
+              if(!taPintada){
+                for(var i = 1; i < (overStringIndex-this.clickedString); i++) {
+              
+                    document.getElementsByClassName("dragable")[divInicialIndex+i].classList.remove("teste4")
+                    document.getElementsByClassName("dragable")[divInicialIndex+i].classList.add("teste3")
+                  
+
+                }
+              } else {
+                document.getElementsByClassName("dragable")[divInicialIndex+(overStringIndex-this.clickedString)].classList.remove("teste3")
+                document.getElementsByClassName("dragable")[divInicialIndex+(overStringIndex-this.clickedString)+1].classList.remove("teste4")
+                
+              }
+              
+              event.target.classList.add("teste4")
+              
+            } else {
+              console.log("ando pa traaaaaaaaaaais")
+            }
+
+
+          }
+       
+        }
+      }) */
+
+
+      this.internDragableDiagram.nativeElement.appendChild(dragContainer)
+
+
+
+      count2 = count2 + 1
     }
 
     this.setInicialFooter()
   }
+
+  mouseIsDown = false
+  clickedString = 0
+  clickedFret = 0
 
   setHeights() {
     //setar alturas dos diagramas conforme a quantidade de casas:
@@ -93,6 +298,7 @@ export class CriadorVisualComponent implements OnInit {
     let internRowsHeight = (height - fator)/this.noDeCasas
     this.diagram.nativeElement.setAttribute("style", "height:"+height+"px; grid-template-rows:repeat(" + this.noDeCasas +",1fr)")
     this.internDiagram.nativeElement.setAttribute("style", "height:"+(height-3)+"px; grid-template-rows:repeat(" + this.noDeCasas +"," + internRowsHeight + "px)")
+    this.internDragableDiagram.nativeElement.setAttribute("style", "height:"+(height-3)+"px; grid-template-rows:repeat(" + this.noDeCasas +"," + internRowsHeight + "px)")
   }
 
   setDot(event:any){
@@ -134,7 +340,7 @@ export class CriadorVisualComponent implements OnInit {
     //LÓGICA PARA PEGAR INFO DOS DEDOS:
     this.newChord_dedos = []
     for(var i = 0; i < this.internDiagram.nativeElement.children.length; i++){
-      let button = this.internDiagram.nativeElement.children[i].children[0].children[0]
+      let button = this.internDiagram.nativeElement.children[i].children[0]
       if(button.classList.value.includes("selected-dot")){
         let casa = Math.ceil((i+1)/6)
         let corda = 6 * casa - i
@@ -192,6 +398,7 @@ export class CriadorVisualComponent implements OnInit {
 
   ngAfterViewInit() {
     this.createCells()
+
   }
 
 }

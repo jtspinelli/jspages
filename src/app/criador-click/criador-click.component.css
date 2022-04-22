@@ -1,0 +1,11 @@
+.diagram {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(5,1fr);
+    background-color: grey;
+    gap: 3px;
+    padding: 3px;
+    box-sizing: border-box;
+    width: 203px;
+    margin-left: 20.3px;
+}
