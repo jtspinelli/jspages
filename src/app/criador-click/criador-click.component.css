@@ -9,3 +9,17 @@
     width: 203px;
     margin-left: 20.3px;
 }
+
+.footer {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    text-align: center;
+    width: 240px;
+    margin-left: 1.5px;
+    margin-top: 3px;
+}
+
+.footer-img {
+    width: 31px;
+    cursor: pointer;
+}

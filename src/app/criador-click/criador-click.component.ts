@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { GenerateChordService } from '../generate-chord.service';
 
 @Component({
   selector: 'app-criador-click',
@@ -7,7 +8,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 export class CriadorClickComponent implements OnInit {
 
-  constructor() { 
+  constructor(private _generateChordService:GenerateChordService) { 
     document.addEventListener("mouseup", () => {
       this.mouseIsDown = false
       this.clearPestanaShadowDaCasa()
@@ -16,7 +17,12 @@ export class CriadorClickComponent implements OnInit {
 
   @ViewChild("diagram") diagram:any
 
-  noDeCasas:number = 4
+  newChordName = ''
+  positions = [1,2,3,4,5,6,7,8,9]
+  newChordPosition = 1
+  newChordFooter:string[] = ['O','o','o','o','o','o']
+
+  noDeCasas:number = 5
   pixelsPorCasa:number = 60
 
   mouseIsDown:boolean = false
@@ -24,12 +30,22 @@ export class CriadorClickComponent implements OnInit {
   casaClicadaIndex:number = 0
   shadowInit = 0
   shadowSpan = 0
+  shadowSpanTrue = 0
 
   fingers:number[][] = []
   pestana:any[] = []
 
   indexDoElementoDaCasaClicado = 0
-  indexDaShadowDivClicada = 0
+  indexDaShadowDivClicada:number = 0
+
+  defaultFooter = [
+    'assets/o_filled.svg',
+    'assets/o.svg',
+    'assets/o.svg',
+    'assets/o.svg',
+    'assets/o.svg',
+    'assets/o.svg'
+  ]
 
   createDiagram() {
 
@@ -119,14 +135,24 @@ export class CriadorClickComponent implements OnInit {
        }
 
      //  this.toggleShadowDot(event)
-     this.toggleShadowDot()
+     this.toggleShadowDot(false)
 
       })
 
       div.addEventListener("mousedown", (event:any) => {
         this.mouseIsDown = true
         this.setarCasaCordaClicada(event) 
-        this.setarElementoClicado()  
+        this.setarElementoClicado()
+        
+        if(event.target.classList.value.includes("pestana-mark")){
+          for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++){
+            if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString() && document.getElementsByClassName("shadow-container")[i].classList.value.includes("pestana-mark")) {
+              document.getElementsByClassName("shadow-container")[i].classList.remove("pestana-mark")
+            }
+          }
+          this.pestana.splice(this.pestana.map(e => e.casa).indexOf(this.casaClicadaIndex + 1),1)
+          
+        }
       })
 
       div.addEventListener("mouseover", (event:any) => {
@@ -139,7 +165,13 @@ export class CriadorClickComponent implements OnInit {
           this.setarPestana(cordaOverIndex,casaOverIndex) //seta array de pestana que vai para o gerador de acorde svg
           this.clearPestanaShadowDaCasa()
 
+          
           this.shadowSpan = cordaOverIndex - this.cordaClicadaIndex
+
+          /* if(this.cordaClicadaIndex > cordaOverIndex){
+            this.shadowSpanTrue = this.cordaClicadaIndex - cordaOverIndex
+            console.log(this.shadowSpanTrue)
+          } */
 
 
           //PESTANA DO GRAVE PRO AGUDO:
@@ -183,7 +215,9 @@ export class CriadorClickComponent implements OnInit {
         let cordaOverIndex = parseInt(event.target.getAttribute("corda-index"))
         if(cordaOverIndex !== this.cordaClicadaIndex){
           //this.criarPestana() //criar 'de fato' a pestana, black button
+          this.toggleShadowDot(true)
         }
+        
         
       })
 
@@ -264,7 +298,7 @@ export class CriadorClickComponent implements OnInit {
   }
 
   setFingerDiagramDivs() {
-    for(var i = 0; i < 4; i++){
+    for(var i = 0; i < this.noDeCasas; i++){
       let div = document.createElement("div")
       div.classList.add("fgr-span6")
       div.setAttribute("casa-index",i.toString())
@@ -336,37 +370,54 @@ export class CriadorClickComponent implements OnInit {
     
   }
 
-  toggleShadowDot() {
-    let cordas = [
+  toggleShadowDot(pestana:boolean) {
+    if(pestana == false) {
+      let cordas = [
       {index:0, number:6},
       {index:1, number:5},
       {index:2, number:4},
       {index:3, number:3},
       {index:4, number:2},
       {index:5, number:1}
-    ]
+      ]
+      
+      let shadowDivClicada = document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada]
+
     
-    let shadowDivClicada = document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada]
-    let elementoClicado = document.getElementsByClassName("finger-diagram")[0].children[this.indexDoElementoDaCasaClicado]
+      if(shadowDivClicada.classList.value.includes("shadow-container-dot")){//se a célula já tem a classe do dot
+        shadowDivClicada.classList.remove("shadow-container-dot") //remover classe
 
-  
-    if(shadowDivClicada.classList.value.includes("shadow-container-dot")){//se a célula já tem a classe do dot
-      shadowDivClicada.classList.remove("shadow-container-dot") //remover classe
+        //lógica para remover o array referente a esse dot do array de dedos:
+        let fingersToObject = this.fingers.map(e => { return {
+          corda:e[0],
+          casa:e[1]
+        }
+        })
+        let dotToRemoveIndex = fingersToObject.indexOf(fingersToObject.filter(e => e.corda == cordas[cordas.map(e => e.index).indexOf(this.cordaClicadaIndex)].number && e.casa == this.casaClicadaIndex + 1)[0]) 
+        this.fingers.splice(dotToRemoveIndex,1)
+      } else {//se a célula não tem a classe do dot
+        shadowDivClicada.classList.add("shadow-container-dot") //adicionar classe
 
-      //lógica para remover o array referente a esse dot do array de dedos:
-      let fingersToObject = this.fingers.map(e => { return {
-        corda:e[0],
-        casa:e[1]
+        //E SETAR ARRAY COM AS INFORMAÇÕES DE DEDOS:
+        this.fingers.push([cordas[cordas.map(e => e.index).indexOf(this.cordaClicadaIndex)].number,this.casaClicadaIndex + 1])
+    
       }
-      })
-      let dotToRemoveIndex = fingersToObject.indexOf(fingersToObject.filter(e => e.corda == cordas[cordas.map(e => e.index).indexOf(this.cordaClicadaIndex)].number && e.casa == this.casaClicadaIndex + 1)[0]) 
-      this.fingers.splice(dotToRemoveIndex,1)
-    } else {//se a célula não tem a classe do dot
-      shadowDivClicada.classList.add("shadow-container-dot") //adicionar classe
+    }
 
-      //E SETAR ARRAY COM AS INFORMAÇÕES DE DEDOS:
-      this.fingers.push([cordas[cordas.map(e => e.index).indexOf(this.cordaClicadaIndex)].number,this.casaClicadaIndex + 1])
-  
+    if(pestana == true) {
+
+      //AJUSTE NECESSÁRIO CASO PESTANA TENHA SIDO FEITA DA DIREITA PRA ESQUERDA (do agudo pro grave)
+      if(this.shadowSpan < 0) {
+        this.shadowSpan = this.shadowSpan * -1
+        this.shadowInit = this.shadowInit - this.shadowSpan
+      }
+
+
+      for(var i = this.shadowInit; i < this.shadowInit + this.shadowSpan + 1; i++){
+        document.getElementsByClassName("shadow-container")[i].classList.add("pestana-mark")
+      }
+      
+      
     }
 
 
@@ -407,6 +458,7 @@ export class CriadorClickComponent implements OnInit {
    //PASSO 2) LÓGICA DE CONSTRUÇÃO DOS BLACK DOTS DA CASA
     let booleans = this.getNumberOfContainers().booleans
     let counts = this.getNumberOfContainers().counts
+
 
     //AJUSTAR A CLASSE DO PRIMEIRO ELEMENTO DA CASA:
     fgrContainers[casaStartIndex].className = ''
@@ -451,6 +503,9 @@ export class CriadorClickComponent implements OnInit {
     for(var i = 1; i < this.casas.length - this.casaClicadaIndex; i++) {
       this.casas[this.casaClicadaIndex+i].startAt = this.casas[this.casaClicadaIndex+i].startAt + (counts.length - 1)
     }
+
+
+    this.atualizarPreview()
 
   
   }
@@ -596,59 +651,212 @@ export class CriadorClickComponent implements OnInit {
     
   }
 
-  
-
   casas = [
     {index:0, startAt:0, divisoes:[6]},
     {index:1, startAt:1, divisoes:[6]},
     {index:2, startAt:2, divisoes:[6]},
-    {index:3, startAt:3, divisoes:[6]}
+    {index:3, startAt:3, divisoes:[6]},
+    {index:4, startAt:4, divisoes:[6]}
   ]
 
   diagramCorresp = [
     {casaIndex: 0, elements:[[0,1,2,3,4,5]]},
     {casaIndex: 1, elements:[[6,7,8,9,10,11]]},
     {casaIndex: 2, elements:[[12,13,14,15,16,17]]},
-    {casaIndex: 3, elements:[[18,19,20,21,22,23]]}
+    {casaIndex: 3, elements:[[18,19,20,21,22,23]]},
+    {casaIndex: 4, elements:[[24,25,26,27,28,29]]}
   ]
 
   getNumberOfContainers() {
     let booleans:any[] = []
     let counts:number[] = []
     let num = 0
+    let temBlackDot:boolean = false
+
 
     //setar array booleans, para determinar quantos containers a casa terá:
-    for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++) {
-      if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
-        let elBoolean = document.getElementsByClassName("shadow-container")[i].classList.value.includes("shadow-container-dot")
-        
-        if(elBoolean !== booleans[booleans.length-1]){
-          booleans.push(elBoolean)
-          counts[num] = 1
-          num = num + 1
-          
-        } else {
-          
-          if(elBoolean == booleans[booleans.length-1] && elBoolean == true){
+
+    for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++){
+      if(document.getElementsByClassName("shadow-container")[i].classList.value.includes("shadow-container-dot") && document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
+        temBlackDot = true
+      }
+    }
+
+    //SE TIVER DOT NA CASA, DESCONSIDERAR QQ MARCAÇÃO DE PESTANA (por enquanto)
+    if(temBlackDot == true) {
+      for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++) {
+        if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
+          let elBoolean = document.getElementsByClassName("shadow-container")[i].classList.value.includes("shadow-container-dot")
+          let elBooleanP = document.getElementsByClassName("shadow-container")[i].classList.value.includes("pestana-mark")
+
+          if(elBoolean !== booleans[booleans.length-1]) {
+            if(elBoolean == true) {
+              if(elBoolean == true) {
+                booleans.push(true)
+                counts[num] = 1
+                num = num + 1 
+              }
+            } else { //DIFERENTE MAS FALSO
+              if(elBooleanP == true) { 
+                if(document.getElementsByClassName("shadow-container")[i-1].classList.value.includes("pestana-mark") == true) {
+                  counts[num-1] = counts[num-1] + 1
+                } else {
+                  booleans.push(true)
+                counts[num] = 1
+                num = num + 1 
+                }
+                
+              } else {
+                booleans.push(false)
+                counts[num] = 1
+                num = num + 1 
+              }
+              
+            }
+            
+          } else {
+            if(elBoolean == true) {
+              booleans.push(true)
+             counts[num] = 1
+             num = num + 1 
+            } else {
+              if(elBooleanP == false) {
+                counts[num-1] = counts[num-1] + 1
+              } else {
+                booleans.push(true)
+                counts[num] = 1
+                num = num + 1 
+              }
+            } 
+          }
+
+         
+
+
+  
+          /* if(elBoolean !== booleans[booleans.length-1]){
             booleans.push(elBoolean)
             counts[num] = 1
             num = num + 1
+            
           } else {
-            counts[num-1] = counts[num-1] + 1
+            
+            if(elBoolean == booleans[booleans.length-1] && elBoolean == true){
+              booleans.push(elBoolean)
+              counts[num] = 1
+              num = num + 1
+            } else {
+              counts[num-1] = counts[num-1] + 1
+            }
+            
+          } */
+
+          
+        }
+        
+      }
+
+    //SE NÃO TEM DOT NA CASA, FAZER A DIVISÃO CONSIDERANDO A PESTANA:  
+    } else {
+      for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++) {
+        if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
+         
+          let elBooleanP = document.getElementsByClassName("shadow-container")[i].classList.value.includes("pestana-mark")
+
+  
+          if(elBooleanP !== booleans[booleans.length-1]){
+            booleans.push(elBooleanP)
+            counts[num] = 1
+            num = num + 1
+            
+          } else {
+            counts[num-1] = counts[num-1] + 1            
+            
           }
           
         }
         
       }
-      
+
     }
 
+    /* //CÓDIGO ANTIGO, SEM CONSIDERAR A PESTANA:
+        //setar array booleans, para determinar quantos containers a casa terá:
+        for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++) {
+          if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
+            let elBoolean = document.getElementsByClassName("shadow-container")[i].classList.value.includes("shadow-container-dot")
+            
+            if(elBoolean !== booleans[booleans.length-1]){
+              booleans.push(elBoolean)
+              counts[num] = 1
+              num = num + 1
+              
+            } else {
+              
+              if(elBoolean == booleans[booleans.length-1] && elBoolean == true){
+                booleans.push(elBoolean)
+                counts[num] = 1
+                num = num + 1
+              } else {
+                counts[num-1] = counts[num-1] + 1
+              }
+              
+            }
+            
+          }
+          
+        } */
 
+    
     return({booleans:booleans, counts:counts})
   }
   
+  atualizarPreview() {
+    let pestanaInstr:number[][] = []
+    this.pestana.forEach((pest:any) => {
+      let temp:number[] = []
+      temp.push(pest.fromString)
+      temp.push(pest.toString)
+      temp.push(pest.casa)
+      pestanaInstr.push(temp)
+    })
+
+
+    let acorde = this._generateChordService.SVGchord_gerarAcorde_aceitaPestanaS('customChord',this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
+
+    document.getElementById("acordeNovo")?.firstChild?.remove()
+    document.getElementById("acordeNovo")?.appendChild(acorde)
+
+  }
+
+  changeFooter(event:any, index:number) {
+    let footerOptions:any[] = [
+      {name:'O', link:'assets/o_filled.svg'},
+      {name:'o', link:'assets/o.svg'},
+      {name:'x', link:'assets/x.svg'}
+    ]
+    let indexDoAtual = footerOptions.map(e => e.link).indexOf(footerOptions.map(e => e.link).filter(e => e == event.target.getAttribute("src"))[0])
+    let indexProximo = indexDoAtual
+
+    if(indexDoAtual+1 > 2) {
+      indexProximo = 0
+    } else {
+      indexProximo = indexDoAtual + 1
+    }
+
+    event.target.setAttribute("src",footerOptions[indexProximo].link)
+
+    this.newChordFooter[index] = footerOptions[indexProximo].name
+
+    this.atualizarPreview()
+    
+  }
 
   ngOnInit(): void {
+    let acorde = this._generateChordService.SVGchord_gerarAcorde_aceitaPestanaS('customChord','',[],this.newChordFooter,[])
+
+    document.getElementById("acordeNovo")?.firstChild?.remove()
+    document.getElementById("acordeNovo")?.appendChild(acorde)
   }
 
   ngAfterViewInit() {
