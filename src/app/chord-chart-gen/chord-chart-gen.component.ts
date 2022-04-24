@@ -15,7 +15,6 @@ export class ChordChartGenComponent implements OnInit {
 
   teste(evento:any) {
     let qtde:number = this.buscaAcordeComponent.selecionados.nativeElement.children.length
-    console.log(evento)
     let customChord = evento.g
     let customChordId = evento.structure.id
 
@@ -122,7 +121,6 @@ export class ChordChartGenComponent implements OnInit {
     })
 
   }
-
   ngOnInit(): void {
   }
 

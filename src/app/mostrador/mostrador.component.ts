@@ -34,7 +34,7 @@ export class MostradorComponent implements OnInit {
 
   printarAcordes() {
     this.chords.forEach((chord:any) => {
-      let SVG = this._generateChordsService.SVGchord_gerarAcorde(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+      let SVG = this._generateChordsService.SVGchord_gerarAcorde_aceitaPestanaS(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
       document.getElementById("pool")?.appendChild(SVG)
       this.chordsPool.nativeElement.lastChild.classList.add('destacar')
       

@@ -1,16 +1,22 @@
+<div style="width: 625px; text-align: center;">
+    <h1>Criador de Acorde</h1>
+</div>
 
-    <div class="chord-name">
-       <input autocomplete="none" class="input-chord-name" [(ngModel)]="newChordName" (keyup)="atualizarPreview()" type="text" placeholder="nome do acorde"> 
-    </div>
 
-    <!-- <div style="margin-left: 20px;">
-        <label for="position">Posição:</label>
-        <select (change)="atualizarPreview()" style="margin-left:5px;" name="" id="" [(ngModel)]="newChordPosition">
-            <option name="position" *ngFor="let position of positions" [value]="position">{{position}}</option>
-        </select>
-        
-    </div> -->
+
+
+<div class="chord-name">
+    <input autocomplete="none" class="input-chord-name" [(ngModel)]="newChordName" (keyup)="atualizarPreview()" type="text" placeholder="nome do acorde"> 
+</div>
+
+<!-- <div style="margin-left: 20px;">
+    <label for="position">Posição:</label>
+    <select (change)="atualizarPreview()" style="margin-left:5px;" name="" id="" [(ngModel)]="newChordPosition">
+        <option name="position" *ngFor="let position of positions" [value]="position">{{position}}</option>
+    </select>
     
+</div> -->
+
 
 <br>
 
@@ -32,7 +38,7 @@
             OUTPUT PREVIEW:
         </div>
     
-        <div id="acordeNovo">
+        <div (click)="sendChord()" id="acordeNovo">
     
         </div>
     </div>

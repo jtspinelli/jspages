@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { GenerateChordService } from '../generate-chord.service';
 
 @Component({
-  selector: 'app-criador-click',
+  selector: 'criador-click',
   templateUrl: './criador-click.component.html',
   styleUrls: ['./criador-click.component.css']
 })
@@ -27,6 +27,7 @@ export class CriadorClickComponent implements OnInit {
   }
 
   @ViewChild("diagram") diagram:any
+  @Output() enviarAcorde:EventEmitter<any> = new EventEmitter()
 
   newChordName = ''
   positions = [1,2,3,4,5,6,7,8,9]
@@ -584,7 +585,11 @@ export class CriadorClickComponent implements OnInit {
         let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
           let casa = this.casaClicadaIndex+1
           let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          if(this.fingers[fingerInfoIndex].length == 3){
+            this.fingers[fingerInfoIndex].splice(2,1)
+          }
           this.fingers[fingerInfoIndex].push(1)
+          
           this.atualizarPreview()
         } 
       })
@@ -601,6 +606,9 @@ export class CriadorClickComponent implements OnInit {
           let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
           let casa = this.casaClicadaIndex+1
           let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          if(this.fingers[fingerInfoIndex].length == 3){
+            this.fingers[fingerInfoIndex].splice(2,1)
+          }
           this.fingers[fingerInfoIndex].push(2)
           this.atualizarPreview()
         }            
@@ -618,6 +626,9 @@ export class CriadorClickComponent implements OnInit {
           let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
           let casa = this.casaClicadaIndex+1
           let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          if(this.fingers[fingerInfoIndex].length == 3){
+            this.fingers[fingerInfoIndex].splice(2,1)
+          }
           this.fingers[fingerInfoIndex].push(3)
           this.atualizarPreview()
         }        
@@ -635,6 +646,9 @@ export class CriadorClickComponent implements OnInit {
           let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
           let casa = this.casaClicadaIndex+1
           let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          if(this.fingers[fingerInfoIndex].length == 3){
+            this.fingers[fingerInfoIndex].splice(2,1)
+          }
           this.fingers[fingerInfoIndex].push(4)
           this.atualizarPreview()
         }        
@@ -693,6 +707,9 @@ export class CriadorClickComponent implements OnInit {
               let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
               let casa = this.casaClicadaIndex+1
               let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              if(this.fingers[fingerInfoIndex].length == 3){
+                this.fingers[fingerInfoIndex].splice(2,1)
+              }
               this.fingers[fingerInfoIndex].push(1)
               this.atualizarPreview()
             }        
@@ -710,6 +727,9 @@ export class CriadorClickComponent implements OnInit {
               let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
               let casa = this.casaClicadaIndex+1
               let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              if(this.fingers[fingerInfoIndex].length == 3){
+                this.fingers[fingerInfoIndex].splice(2,1)
+              }
               this.fingers[fingerInfoIndex].push(2)
               this.atualizarPreview()
             }            
@@ -727,6 +747,9 @@ export class CriadorClickComponent implements OnInit {
               let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
               let casa = this.casaClicadaIndex+1
               let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              if(this.fingers[fingerInfoIndex].length == 3){
+                this.fingers[fingerInfoIndex].splice(2,1)
+              }
               this.fingers[fingerInfoIndex].push(3)
               this.atualizarPreview()
             }        
@@ -744,6 +767,9 @@ export class CriadorClickComponent implements OnInit {
               let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
               let casa = this.casaClicadaIndex+1
               let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              if(this.fingers[fingerInfoIndex].length == 3){
+                this.fingers[fingerInfoIndex].splice(2,1)
+              }
               this.fingers[fingerInfoIndex].push(4)
               this.atualizarPreview()
             }        
@@ -1185,6 +1211,7 @@ export class CriadorClickComponent implements OnInit {
 
 
     let acorde = this._generateChordService.SVGchord_gerarAcorde_aceitaPestanaS('customChord',this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
+    acorde.classList.add("destacar")
 
     document.getElementById("acordeNovo")?.firstChild?.remove()
     document.getElementById("acordeNovo")?.appendChild(acorde)
@@ -1214,8 +1241,47 @@ export class CriadorClickComponent implements OnInit {
     
   }
 
+  makeId(length:number) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+  }
+
+  sendChord() {
+
+    let pestanaInstr:number[][] = []
+    this.pestana.forEach((pest:any) => {
+      let temp:number[] = []
+      temp.push(pest.fromString)
+      temp.push(pest.toString)
+      temp.push(pest.casa)
+      pestanaInstr.push(temp)
+    })
+
+    let qtde = this._generateChordService.qtde
+   
+    let customChordg = this._generateChordService.SVGchord_gerarAcorde_Group_aceitaPestanaS(qtde,'customChord'+this.makeId(5),this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
+    let customChord = {g:customChordg, structure:{
+      dedos:this.fingers,
+      footer:this.newChordFooter,
+      id:'customChord_'+this.makeId(5),
+      ordenadorMaiores:0,
+      pestana:pestanaInstr,
+      title:this.newChordName,
+      position:this.newChordPosition
+    }}
+    
+    this.enviarAcorde.emit(customChord)
+  }
+
   ngOnInit(): void {
     let acorde = this._generateChordService.SVGchord_gerarAcorde_aceitaPestanaS('customChord','',[],this.newChordFooter,[])
+    acorde.classList.add("destacar")
 
     document.getElementById("acordeNovo")?.firstChild?.remove()
     document.getElementById("acordeNovo")?.appendChild(acorde)
