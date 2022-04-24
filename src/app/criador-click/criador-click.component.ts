@@ -12,6 +12,17 @@ export class CriadorClickComponent implements OnInit {
     document.addEventListener("mouseup", () => {
       this.mouseIsDown = false
       this.clearPestanaShadowDaCasa()
+      if(this.rightClickedDotContainerIndex && this.usingFingerSelector == false) {
+        let contextMenu = document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1]
+       
+        contextMenu.classList.add("hidden")
+        this.rightClickedDotContainerIndex = undefined
+      }
+      
+    })
+
+    document.body.addEventListener("mouseup", () => {
+      
     })
   }
 
@@ -47,6 +58,10 @@ export class CriadorClickComponent implements OnInit {
     'assets/o.svg'
   ]
 
+  rightClickedDotContainerIndex:number | undefined
+  usingFingerSelector:boolean = false
+
+
   createDiagram() {
 
     this.setDiagramCells()
@@ -54,6 +69,8 @@ export class CriadorClickComponent implements OnInit {
     this.createShadowDiagram()
 
     this.createFingerDiagram()
+
+    this.createNumbersDiagram()
 
     this.setDiagramsHeight()
 
@@ -63,6 +80,7 @@ export class CriadorClickComponent implements OnInit {
     let diagram = this.diagram.nativeElement
     let internDiagram = document.getElementsByClassName("shadow-diagram")[0]
     let fingerDiagram = document.getElementsByClassName("finger-diagram")[0]
+    let numbersDiagram = document.getElementsByClassName("numbers-diagram")[0]
    
     //setar altura do diagrama base conforme a quantidade de casas:
     let height = this.pixelsPorCasa * this.noDeCasas
@@ -72,6 +90,7 @@ export class CriadorClickComponent implements OnInit {
     diagram.setAttribute("style", "height:"+height+"px; grid-template-rows:repeat(" + this.noDeCasas +",1fr)")
     internDiagram.setAttribute("style", "height:"+(height-3)+"px; grid-template-rows:repeat(" + this.noDeCasas +"," + internRowsHeight + "px)")
     fingerDiagram.setAttribute("style", "height:"+(height-3)+"px; grid-template-rows:repeat(" + this.noDeCasas +"," + internRowsHeight + "px)")
+    numbersDiagram.setAttribute("style", "height:"+(height-3)+"px; grid-template-rows:repeat(" + this.noDeCasas +"," + internRowsHeight + "px)")
   }
 
   setInternDiagramHeight() {
@@ -102,6 +121,16 @@ export class CriadorClickComponent implements OnInit {
     diagram.appendChild(fingerDiagram)
 
     this.setFingerDiagramDivs()
+  }
+
+  createNumbersDiagram() {
+    let diagram = this.diagram.nativeElement
+
+    let numbersDiagram = document.createElement("div")
+    numbersDiagram.classList.add("numbers-diagram")
+    diagram.appendChild(numbersDiagram)
+
+    this.setNumbersDiagramDivs()
   }
 
   setDiagramCells() {
@@ -213,11 +242,35 @@ export class CriadorClickComponent implements OnInit {
 
         //SE O MOUSE DESCEU NUMA CORDA E SUBIU EM OUTRA, MONTAR PESTANA:
         let cordaOverIndex = parseInt(event.target.getAttribute("corda-index"))
-        if(cordaOverIndex !== this.cordaClicadaIndex){
+        let casaOverIndex = parseInt(event.target.getAttribute("casa-index"))
+        if(cordaOverIndex !== this.cordaClicadaIndex && casaOverIndex == this.casaClicadaIndex){
           //this.criarPestana() //criar 'de fato' a pestana, black button
           this.toggleShadowDot(true)
         }
         
+        
+      })
+
+      div.addEventListener("contextmenu",(event:any) => {
+        if(event.target.classList.value.includes("shadow-container-dot")){
+          event.preventDefault()
+          let shadowContainers = document.getElementsByClassName("shadow-container")
+          let shadowDivIndex = 0
+          for(var i = 0; i < shadowContainers.length; i++) {
+            let condition1 = shadowContainers[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()
+            let condition2 = shadowContainers[i].getAttribute("corda-index") == this.cordaClicadaIndex.toString()
+            if(condition1 && condition2){
+              shadowDivIndex = i
+            }
+          }
+          let index = this.diagramCorresp.map(e => e.casaIndex).indexOf(this.diagramCorresp.map(e => e.casaIndex).filter(e => e == this.casaClicadaIndex)[0])
+          let correspElements = this.diagramCorresp[index].elements
+          let booleanMap = correspElements.map(e => e.includes(shadowDivIndex))
+          let booleanTrueIndex = booleanMap.indexOf(true)
+          let clickedDotContainer = document.getElementsByClassName("finger-diagram")[0].children[this.casas[this.casaClicadaIndex].startAt + booleanTrueIndex]
+          this.rightClickedDotContainerIndex = this.casas[this.casaClicadaIndex].startAt + booleanTrueIndex
+          clickedDotContainer.children[1].classList.remove("hidden")
+        }
         
       })
 
@@ -307,6 +360,16 @@ export class CriadorClickComponent implements OnInit {
     }
   }
 
+  setNumbersDiagramDivs() {
+    for(var i = 0; i < this.noDeCasas; i++){
+      let div = document.createElement("div")
+      div.classList.add("fgr-span6")
+      div.setAttribute("casa-index",i.toString())
+      div.setAttribute("element","1")
+      document.getElementsByClassName("numbers-diagram")[0].appendChild(div)
+    }
+  }
+
   clearPestanaShadowDaCasa(){
     //limpar a marcação 'shadow' de pestana
     for(var a = 0; a < document.getElementsByClassName("shadow-container").length; a++){
@@ -371,8 +434,7 @@ export class CriadorClickComponent implements OnInit {
   }
 
   toggleShadowDot(pestana:boolean) {
-    if(pestana == false) {
-      let cordas = [
+    let cordas = [
       {index:0, number:6},
       {index:1, number:5},
       {index:2, number:4},
@@ -380,12 +442,16 @@ export class CriadorClickComponent implements OnInit {
       {index:4, number:2},
       {index:5, number:1}
       ]
+    if(pestana == false) {
+      
       
       let shadowDivClicada = document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada]
 
     
       if(shadowDivClicada.classList.value.includes("shadow-container-dot")){//se a célula já tem a classe do dot
         shadowDivClicada.classList.remove("shadow-container-dot") //remover classe
+        shadowDivClicada.classList.remove("has-number") //remover classe
+
 
         //lógica para remover o array referente a esse dot do array de dedos:
         let fingersToObject = this.fingers.map(e => { return {
@@ -436,6 +502,8 @@ export class CriadorClickComponent implements OnInit {
     //CASO TENHA DOT NO ELEMENTO ÚNICO DA CASA, REMOVER
     if(fgrContainers[casaStartIndex].children.length > 0) {
       fgrContainers[casaStartIndex].children[0].remove()
+      fgrContainers[casaStartIndex].children[0].remove()
+      
     }
 
     //REMOVER DEMAIS ELEMENTOS DA CASA
@@ -453,11 +521,31 @@ export class CriadorClickComponent implements OnInit {
 
 
    //*******************************************************************  
+
+    //**********PASSO 1.1) LÓGICA DE RESET DA CASA DE NUMERO DE DEDO****************
+    
+
+    //RESETAR TAMANHO DO ELEMENTO ÚNICO DA CASA
+    let numbersContainers = document.getElementsByClassName("numbers-diagram")[0].children
+    numbersContainers[casaStartIndex].className = ''
+    numbersContainers[casaStartIndex].classList.add("fgr-span6")
+
+    //CASO TENHA ALGO NO ELEMENTO ÚNICO DA CASA, REMOVER
+    numbersContainers[casaStartIndex].textContent = ''
+    //REMOVER DEMAIS ELEMENTOS DA CASA
+    for(var m = 1; m <= aRemover; m++) {
+      numbersContainers[casaStartIndex+1].remove()
+    }
+
+
+   //*******************************************************************  
    
    
    //PASSO 2) LÓGICA DE CONSTRUÇÃO DOS BLACK DOTS DA CASA
     let booleans = this.getNumberOfContainers().booleans
     let counts = this.getNumberOfContainers().counts
+    let booleansOfNumberMarks = this.getNumberOfContainers().booleansOfNumberMarks
+    let dotsNumbers = this.getNumberOfContainers().dotsNumbers
 
 
     //AJUSTAR A CLASSE DO PRIMEIRO ELEMENTO DA CASA:
@@ -467,9 +555,102 @@ export class CriadorClickComponent implements OnInit {
 
     //COLOCAR DOT NO PRIMEIRO ELEMENTO CASO TENHA
     if(booleans[0] == true) {
+      //botão:
       let button = document.createElement("button")
       button.classList.add("fgr-dot")
-       document.getElementsByClassName("finger-diagram")[0].children[this.casas[this.casaClicadaIndex].startAt].appendChild(button)
+      document.getElementsByClassName("finger-diagram")[0].children[this.casas[this.casaClicadaIndex].startAt].appendChild(button)
+
+      //criar seletor de dedo
+      let dedoSelect = document.createElement("div")
+      dedoSelect.classList.add("finger-selector")
+      dedoSelect.classList.add("hidden")
+      dedoSelect.addEventListener("mouseenter", () => {
+        this.usingFingerSelector = true
+      })
+      dedoSelect.addEventListener("mouseleave", () => {
+        this.usingFingerSelector = false
+      })
+      let lista = document.createElement("ul")
+      lista.classList.add("finger-list")
+     
+      let dedo1 = document.createElement("li")
+      dedo1.addEventListener("click",() => {
+        if(this.rightClickedDotContainerIndex) {
+          document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "1"
+          document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","1")
+
+        let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+          let casa = this.casaClicadaIndex+1
+          let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          this.fingers[fingerInfoIndex].push(1)
+          this.atualizarPreview()
+        } 
+      })
+      dedo1.classList.add("finger-selector-item")
+      dedo1.textContent = "1"
+      let dedo2 = document.createElement("li")
+      dedo2.addEventListener("click",() => {
+        if(this.rightClickedDotContainerIndex) {
+          document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "2"
+          document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","2")
+
+          let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+          let casa = this.casaClicadaIndex+1
+          let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          this.fingers[fingerInfoIndex].push(2)
+          this.atualizarPreview()
+        }            
+      })
+      dedo2.classList.add("finger-selector-item")
+      dedo2.textContent = "2"
+      let dedo3 = document.createElement("li")
+      dedo3.addEventListener("click",() => {
+        if(this.rightClickedDotContainerIndex) {
+          document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "3"
+          document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","3")
+
+          let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+          let casa = this.casaClicadaIndex+1
+          let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          this.fingers[fingerInfoIndex].push(3)
+          this.atualizarPreview()
+        }        
+      })
+      dedo3.classList.add("finger-selector-item")
+      dedo3.textContent = "3"
+      let dedo4 = document.createElement("li")
+      dedo4.addEventListener("click",() => {
+        if(this.rightClickedDotContainerIndex) {
+          document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "4"
+          document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+          document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","4")
+
+          let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+          let casa = this.casaClicadaIndex+1
+          let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+          this.fingers[fingerInfoIndex].push(4)
+          this.atualizarPreview()
+        }        
+      })
+      dedo4.classList.add("finger-selector-item")
+      dedo4.textContent = "4"
+
+      lista.appendChild(dedo1)
+      lista.appendChild(dedo2)
+      lista.appendChild(dedo3)
+      lista.appendChild(dedo4)
+
+      dedoSelect.appendChild(lista)
+
+      document.getElementsByClassName("finger-diagram")[0].children[this.casas[this.casaClicadaIndex].startAt].appendChild(dedoSelect)
+
     }
 
     //CRIAR NOVOS ELEMENTOS DA CASA (se terá mais de 1 divisão):
@@ -483,12 +664,109 @@ export class CriadorClickComponent implements OnInit {
         div.setAttribute("element",elementNumber.toString())
         
         if(booleans[i] == true) {
+          //criar botão
           let button = document.createElement("button")
           button.classList.add("fgr-dot")
           div.appendChild(button)
-        }
 
+          //criar seletor de dedo
+          let dedoSelect = document.createElement("div")
+          dedoSelect.classList.add("finger-selector")
+          dedoSelect.classList.add("hidden")
+          dedoSelect.addEventListener("mouseenter", () => {
+            this.usingFingerSelector = true
+          })
+          dedoSelect.addEventListener("mouseleave", () => {
+            this.usingFingerSelector = false
+          })
+          let lista = document.createElement("ul")
+          lista.classList.add("finger-list")
+         
+          let dedo1 = document.createElement("li")
+          dedo1.addEventListener("click",() => {
+            if(this.rightClickedDotContainerIndex) {
+              document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "1"
+              document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","1")
+              
+              let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+              let casa = this.casaClicadaIndex+1
+              let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              this.fingers[fingerInfoIndex].push(1)
+              this.atualizarPreview()
+            }        
+          })
+          dedo1.classList.add("finger-selector-item")
+          dedo1.textContent = "1"
+          let dedo2 = document.createElement("li")
+          dedo2.addEventListener("click",() => {
+            if(this.rightClickedDotContainerIndex) {
+              document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "2"
+              document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","2")
+
+              let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+              let casa = this.casaClicadaIndex+1
+              let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              this.fingers[fingerInfoIndex].push(2)
+              this.atualizarPreview()
+            }            
+          })
+          dedo2.classList.add("finger-selector-item")
+          dedo2.textContent = "2"
+          let dedo3 = document.createElement("li")
+          dedo3.addEventListener("click",() => {
+            if(this.rightClickedDotContainerIndex) {
+              document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "3"
+              document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","3")
+
+              let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+              let casa = this.casaClicadaIndex+1
+              let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              this.fingers[fingerInfoIndex].push(3)
+              this.atualizarPreview()
+            }        
+          })
+          dedo3.classList.add("finger-selector-item")
+          dedo3.textContent = "3"
+          let dedo4 = document.createElement("li")
+          dedo4.addEventListener("click",() => {
+            if(this.rightClickedDotContainerIndex) {
+              document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "4"
+              document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
+              document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].setAttribute("num","4")
+
+              let corda = cordas.filter(e => e.index == this.cordaClicadaIndex)[0].number
+              let casa = this.casaClicadaIndex+1
+              let fingerInfoIndex = this.fingers.indexOf(this.fingers.filter(e => e[0] == corda && e[1] == casa)[0])
+              this.fingers[fingerInfoIndex].push(4)
+              this.atualizarPreview()
+            }        
+          })
+          dedo4.classList.add("finger-selector-item")
+          dedo4.textContent = "4"
+
+          lista.appendChild(dedo1)
+          lista.appendChild(dedo2)
+          lista.appendChild(dedo3)
+          lista.appendChild(dedo4)
+
+          dedoSelect.appendChild(lista)
+
+          div.appendChild(dedoSelect)
+
+         
+         
+        }
         document.getElementsByClassName("finger-diagram")[0].insertBefore(div,fgrContainers[casaStartIndex].nextElementSibling)
+       
+        
+        
 
       }
     }
@@ -505,8 +783,71 @@ export class CriadorClickComponent implements OnInit {
     }
 
 
+    //AJUSTAR DIAGRAMA DE CORRESPONDÊNCIAS (usado pra catar mais rapidamente a div com botão a partir da divShadow clicada)
+    let teste:any[] = []
+
+    let nums = []
+    for(var i = 0; i< 6; i++) {
+      nums.push(i+(this.casaClicadaIndex*6))
+    }
+
+    let last = 0
+    for(var i = 0; i < counts.length; i++) {
+      let elem:any[] = []
+
+      
+      for(var a = 0; a < counts[i]; a++) {
+
+        elem.push(nums[last+a])
+        
+      }
+      last = nums.indexOf(nums[last+a])
+      teste.push(elem)
+    }
+    this.diagramCorresp[this.casaClicadaIndex].elements = teste
+
+
     this.atualizarPreview()
 
+
+   //*******************************************************************  
+   
+   
+   //PASSO 2.1) LÓGICA DE CONSTRUÇÃO DOS ESPAÇOS PARA RECEBER NÚMERO DE DEDOS
+
+
+   //AJUSTAR A CLASSE DO PRIMEIRO ELEMENTO DA CASA:
+   numbersContainers[casaStartIndex].className = ''
+   numbersContainers[casaStartIndex].classList.add(classToAdd)
+   numbersContainers[casaStartIndex].classList.add("numbers")
+
+   //COLOCAR NÚMERO NO PRIMEIRO ELEMENTO CASO TENHA
+   if(booleansOfNumberMarks[0] == true) {
+     document.getElementsByClassName("numbers-diagram")[0].children[this.casas[this.casaClicadaIndex].startAt].textContent = dotsNumbers[0]
+   }
+
+   //CRIAR NOVOS ELEMENTOS DA CASA (se terá mais de 1 divisão):
+   if(counts.length > 1) {
+     for(var i = counts.length-1; i > 0; i--) {
+       let div = document.createElement("div")
+       let classToNewEl = "fgr-span" + counts[i]
+       div.classList.add(classToNewEl)
+       div.classList.add("numbers")
+       div.setAttribute("casa-index",this.casaClicadaIndex.toString())
+       let elementNumber = i + 1
+       div.setAttribute("element",elementNumber.toString())
+       
+       
+       if(booleansOfNumberMarks[i] == true) {
+         div.textContent = dotsNumbers[i]
+       }
+
+       document.getElementsByClassName("numbers-diagram")[0].insertBefore(div,numbersContainers[casaStartIndex].nextElementSibling)
+
+  
+
+     }
+   }
   
   }
 
@@ -651,6 +992,8 @@ export class CriadorClickComponent implements OnInit {
     
   }
 
+
+  //VARIÁVEIS PARA ARRUMAR (fazer dinamicamente pegando a variável noDeCasas)
   casas = [
     {index:0, startAt:0, divisoes:[6]},
     {index:1, startAt:1, divisoes:[6]},
@@ -669,6 +1012,8 @@ export class CriadorClickComponent implements OnInit {
 
   getNumberOfContainers() {
     let booleans:any[] = []
+    let booleansOfNumberMarks:boolean[] = []
+    let dotsNumbers = []
     let counts:number[] = []
     let num = 0
     let temBlackDot:boolean = false
@@ -682,14 +1027,22 @@ export class CriadorClickComponent implements OnInit {
       }
     }
 
-    //SE TIVER DOT NA CASA, DESCONSIDERAR QQ MARCAÇÃO DE PESTANA (por enquanto)
+    //SE TIVER DOT NA CASA (cria divisões considerando dots e pestana)
     if(temBlackDot == true) {
       for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++) {
         if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
           let elBoolean = document.getElementsByClassName("shadow-container")[i].classList.value.includes("shadow-container-dot")
           let elBooleanP = document.getElementsByClassName("shadow-container")[i].classList.value.includes("pestana-mark")
+          let elBooleanN = document.getElementsByClassName("shadow-container")[i].classList.value.includes("has-number")
+          let dotNum = document.getElementsByClassName("shadow-container")[i].getAttribute("num")
 
           if(elBoolean !== booleans[booleans.length-1]) {
+            booleansOfNumberMarks.push(elBooleanN)
+            if(dotNum){
+              dotsNumbers.push(dotNum)
+            } else {
+              dotsNumbers.push("none")
+            }
             if(elBoolean == true) {
               if(elBoolean == true) {
                 booleans.push(true)
@@ -715,7 +1068,16 @@ export class CriadorClickComponent implements OnInit {
             }
             
           } else {
+            
             if(elBoolean == true) {
+              if(elBooleanN == true){
+                booleansOfNumberMarks.push(elBooleanN)
+                if(dotNum){
+                  dotsNumbers.push(dotNum)
+                } else {
+                  dotsNumbers.push("none")
+                }
+              }
               booleans.push(true)
              counts[num] = 1
              num = num + 1 
@@ -730,7 +1092,7 @@ export class CriadorClickComponent implements OnInit {
             } 
           }
 
-         
+        
 
 
   
@@ -756,7 +1118,7 @@ export class CriadorClickComponent implements OnInit {
         
       }
 
-    //SE NÃO TEM DOT NA CASA, FAZER A DIVISÃO CONSIDERANDO A PESTANA:  
+    //SE NÃO TEM DOT NA CASA, FAZER A DIVISÃO CONSIDERANDO APENAS PESTANA:  
     } else {
       for(var i = 0; i < document.getElementsByClassName("shadow-container").length; i++) {
         if(document.getElementsByClassName("shadow-container")[i].getAttribute("casa-index") == this.casaClicadaIndex.toString()){
@@ -808,7 +1170,7 @@ export class CriadorClickComponent implements OnInit {
         } */
 
     
-    return({booleans:booleans, counts:counts})
+    return({booleans:booleans, counts:counts, booleansOfNumberMarks:booleansOfNumberMarks, dotsNumbers:dotsNumbers})
   }
   
   atualizarPreview() {
