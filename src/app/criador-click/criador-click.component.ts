@@ -575,7 +575,7 @@ export class CriadorClickComponent implements OnInit {
      
       let dedo1 = document.createElement("li")
       dedo1.addEventListener("click",() => {
-        if(this.rightClickedDotContainerIndex) {
+        if(this.rightClickedDotContainerIndex || this.rightClickedDotContainerIndex == 0) {
           document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "1"
           document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
           document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
@@ -592,7 +592,7 @@ export class CriadorClickComponent implements OnInit {
       dedo1.textContent = "1"
       let dedo2 = document.createElement("li")
       dedo2.addEventListener("click",() => {
-        if(this.rightClickedDotContainerIndex) {
+        if(this.rightClickedDotContainerIndex || this.rightClickedDotContainerIndex == 0) {
           document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "2"
           document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
           document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
@@ -609,7 +609,7 @@ export class CriadorClickComponent implements OnInit {
       dedo2.textContent = "2"
       let dedo3 = document.createElement("li")
       dedo3.addEventListener("click",() => {
-        if(this.rightClickedDotContainerIndex) {
+        if(this.rightClickedDotContainerIndex || this.rightClickedDotContainerIndex == 0) {
           document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "3"
           document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
           document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")
@@ -626,7 +626,7 @@ export class CriadorClickComponent implements OnInit {
       dedo3.textContent = "3"
       let dedo4 = document.createElement("li")
       dedo4.addEventListener("click",() => {
-        if(this.rightClickedDotContainerIndex) {
+        if(this.rightClickedDotContainerIndex || this.rightClickedDotContainerIndex == 0) {
           document.getElementsByClassName("numbers-diagram")[0].children[this.rightClickedDotContainerIndex].textContent = "4"
           document.getElementsByClassName("finger-diagram")[0].children[this.rightClickedDotContainerIndex].children[1].classList.add("hidden")
           document.getElementsByClassName("shadow-container")[this.indexDaShadowDivClicada].classList.add("has-number")

@@ -1,25 +1,46 @@
-<div style="display:flex;">
-    <div>
-       <input [(ngModel)]="newChordName" (keyup)="atualizarPreview()" type="text" placeholder="nome do acorde"> 
+
+    <div class="chord-name">
+       <input class="input-chord-name" [(ngModel)]="newChordName" (keyup)="atualizarPreview()" type="text" placeholder="nome do acorde"> 
     </div>
 
-    <div style="margin-left: 20px;">
+    <!-- <div style="margin-left: 20px;">
         <label for="position">Posição:</label>
         <select (change)="atualizarPreview()" style="margin-left:5px;" name="" id="" [(ngModel)]="newChordPosition">
             <option name="position" *ngFor="let position of positions" [value]="position">{{position}}</option>
         </select>
         
-    </div>
+    </div> -->
     
-</div>
+
 <br>
 
 
+<div style="display: flex;">
+    <div style="padding-top:17px">
+        <label for="position">Posição:</label>
+        <select (change)="atualizarPreview()" style="margin-left:5px; padding: 5px;" name="" id="" [(ngModel)]="newChordPosition">
+            <option name="position" *ngFor="let position of positions" [value]="position">{{position}}</option>
+        </select>
+    </div>
+    <!-- DIAGRAMA CLICÁVEL PARA CONFIGURAR O ACORDE: -->
+    <div #diagram class="diagram">
+    </div>
+
+    <div style="display: grid; justify-items: center; width: 240px; margin-left: 60px;">
+        <div style="margin-top:20px; width: 180px; text-align: center;">
+            <!-- <button (click)="verDados()">Ver output</button> -->
+            OUTPUT PREVIEW:
+        </div>
+    
+        <div id="acordeNovo">
+    
+        </div>
+    </div>
 
 
-<!-- DIAGRAMA CLICÁVEL PARA CONFIGURAR O ACORDE: -->
-<div #diagram class="diagram">
 </div>
+
+
 
 <!-- FOOTER -->
 <div class="footer">
@@ -28,14 +49,5 @@
     </div>
 </div>
 
-<div style="display: grid; justify-items: center; width: 240px;">
-    <div style="margin-top:20px; width: 180px; text-align: center;">
-        <!-- <button (click)="verDados()">Ver output</button> -->
-        OUTPUT PREVIEW:
-    </div>
 
-    <div id="acordeNovo">
-
-    </div>
-</div>
 
