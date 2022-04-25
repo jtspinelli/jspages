@@ -1079,15 +1079,17 @@ export class GenerateChordService {
 
     let textContentSuperscript = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     let textContentSubscript = document.createElementNS("http://www.w3.org/2000/svg","tspan")
+    let textResto = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     textContentSuperscript.setAttribute("style","font-size:80%")
     textContentSuperscript.setAttribute("baseline-shift","60%")
     textContentSubscript.setAttribute("style","font-size:80%")
     textContentSubscript.setAttribute("baseline-shift","-30%")
     textContentSubscript.setAttribute("dx","-0.65em")
 
-    if(title.slice(-2) == "74"){
+    if(title.includes("74")){
       textContent.setAttribute("dy","-0.1em")
       let indexOf7 = title.indexOf("7")
+      textResto.textContent = title.substring(indexOf7+2,title.length)
       title = title.substring(0,indexOf7)
       textContentSuperscript.textContent = "7"
       textContentSubscript.textContent = "4"
@@ -1095,6 +1097,7 @@ export class GenerateChordService {
       text.appendChild(textContent)
       text.appendChild(textContentSuperscript)
       text.appendChild(textContentSubscript)
+      text.appendChild(textResto)
     } else {
       textContent.textContent = title
       text.appendChild(textContent)
@@ -2538,15 +2541,17 @@ export class GenerateChordService {
 
     let textContentSuperscript = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     let textContentSubscript = document.createElementNS("http://www.w3.org/2000/svg","tspan")
+    let textResto = document.createElementNS("http://www.w3.org/2000/svg","tspan")
     textContentSuperscript.setAttribute("style","font-size:80%")
     textContentSuperscript.setAttribute("baseline-shift","60%")
     textContentSubscript.setAttribute("style","font-size:80%")
     textContentSubscript.setAttribute("baseline-shift","-30%")
     textContentSubscript.setAttribute("dx","-0.65em")
 
-    if(title.slice(-2) == "74"){
+    if(title.includes("74")){
       textContent.setAttribute("dy","-0.1em")
       let indexOf7 = title.indexOf("7")
+      textResto.textContent = title.substring(indexOf7+2,title.length)
       title = title.substring(0,indexOf7)
       textContentSuperscript.textContent = "7"
       textContentSubscript.textContent = "4"
@@ -2554,6 +2559,7 @@ export class GenerateChordService {
       text.appendChild(textContent)
       text.appendChild(textContentSuperscript)
       text.appendChild(textContentSubscript)
+      text.appendChild(textResto)
     } else {
       textContent.textContent = title
       text.appendChild(textContent)
