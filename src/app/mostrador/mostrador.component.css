@@ -6,3 +6,53 @@
     cursor: pointer;
     text-decoration: underline;
 }
+
+.chords-types {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    margin-bottom: 40px;
+}
+
+.chords-types-item {
+    display: flex;
+    text-align: center;
+    height: 50px;
+    box-sizing: border-box;
+    border: 1px solid gainsboro;
+    padding: 7px;
+    align-items: center;
+}
+
+.chords-types-item:hover {
+    cursor: pointer;
+    background-color: #c83737;
+    color: white;
+    border-color: #c83737;
+
+}
+
+.chords-types-item:hover .code  {
+   border-color: white;
+
+}
+
+.chords-types-item .code {
+    border-right: 1px solid gray;
+    padding-right: 5px;
+    font-family: 'Avenir Atelie do Violão Bold';
+}
+
+.chords-types-item .title {
+    padding-left: 5px;
+}
+
+.active-tag {
+    background-color: #c83737;
+    color: white;
+    border-color: #c83737;
+}
+
+.active-tag .code {
+    border-color: white;
+}

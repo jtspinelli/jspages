@@ -58,7 +58,7 @@ export class GenerateChordService {
 
 
     //CRIAR TAG DE ESTILO COM INFORMAÇÃO DA FONTE PERSONALIZADA
-      let style = document.createElementNS("http://www.w3.org/2000/svg","style")
+      /* let style = document.createElementNS("http://www.w3.org/2000/svg","style")
       style.setAttribute("type","text/css")
 
       let avenirBase64 = ''
@@ -69,7 +69,7 @@ export class GenerateChordService {
         avenirBase64 = data.avenirBase64
         style.innerHTML = "@font-face {font-family:'Avenir Atelie do Violão Bold'; src:url('" + avenirBase64 + "')}"
         svg1.appendChild(style) //enviar a tag <style> pro arquivo SVG
-      })
+      }) */
     /////////////////////////////////////////////////////////////////////
   
 
