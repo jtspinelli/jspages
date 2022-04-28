@@ -288,7 +288,6 @@ export class BuscaAcordeComponent implements OnInit {
   }
 
   montarSVG(){
-    console.log(this.chordsSelecionados)
     this.chordsSelecionados.forEach((chord:any) => {
       let qtde:number = this.selecionados.nativeElement.children.length
 

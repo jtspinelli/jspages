@@ -1264,12 +1264,16 @@ export class CriadorClickComponent implements OnInit {
     })
 
     let qtde = this._generateChordService.qtde
+
+    let customId = this.makeId(5)
+    let fingers = Object.assign([],this.fingers)
+    let footer = Object.assign([],this.newChordFooter)
    
-    let customChordg = this._generateChordService.SVGchord_gerarAcorde_Group_aceitaPestanaS(qtde,'customChord'+this.makeId(5),this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
+    let customChordg = this._generateChordService.SVGchord_gerarAcorde_Group_aceitaPestanaS(qtde,'customChord'+customId,this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
     let customChord = {g:customChordg, structure:{
-      dedos:this.fingers,
-      footer:this.newChordFooter,
-      id:'customChord_'+this.makeId(5),
+      dedos:fingers,
+      footer:footer,
+      id:'customChord_'+customId,
       ordenadorMaiores:0,
       pestana:pestanaInstr,
       title:this.newChordName,
