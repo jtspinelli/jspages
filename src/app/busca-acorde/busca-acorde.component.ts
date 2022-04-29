@@ -40,9 +40,7 @@ export class BuscaAcordeComponent implements OnInit {
 
   getChords() {
     this.http.get(this.url).toPromise().then((data:any) => {
-      //this.chords = data.resultado.items.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1)
       this.chords = data.resultado.items.sort((a:any,b:any) => (a.id > b.id) ? 1 : -1)
-      //console.log(this.chords)
       this.doneGettingChords = true
     }).catch(err => {
       this.doneGettingChords = true
@@ -51,14 +49,16 @@ export class BuscaAcordeComponent implements OnInit {
     })
   }
 
-  preSearchPart2(evento:any) {
-    //metodo chamado no (keydown) do input
-        //assim funciona se a seta pra baixo (40) ou pra cima (38) ficar apertada
+  setHighlitedOption(evento:any) {
+    //metodo chamado no (keydown) do input (assim funciona se a seta pra baixo (40) ou pra cima (38) ficar apertada)
+
+    //SE TECLA PRA BAIXO OU PRA CIMA E HÁ OPÇÕES DE CIFRA (OU TÍTULOS DE ACORDE):
     if((evento.keyCode == 40 || evento.keyCode == 38) && this.titleOptions.length > 0) {
 
-
-      let lastActive = this.isHovered.indexOf(this.isHovered.filter(e => e == true)[0])
+      let lastActive = this.isHovered.indexOf(this.isHovered.filter(e => e == true)[0]) //pegar índice do atualmente 'ativo' ou destacado com a classe de estaque
       let isHoveredIndex = 0
+
+
       if(evento.keyCode == 40){
         isHoveredIndex = lastActive + 1
       } else {
@@ -66,39 +66,77 @@ export class BuscaAcordeComponent implements OnInit {
       }
       
       this.isHovered = []
-      this.isHovered[isHoveredIndex] = true
+      this.isHovered[isHoveredIndex] = true //o array isHovered fica algo como [empty x 3, true] ou [empty x 5, true], etc.
 
     }
   }
 
-  preSearch(evento:any) {
+  setTitleOptions(evento:any) {
     //método chamado no (keyup) do input
 
-    if((evento.keyCode !== 40 && evento.keyCode !== 38)) { //se não for seta pra baixo ou pra cima
-     
-      if(this.titleOptions.length > 0 && evento.keyCode == 13) {
-        let options:any[] = this.chordTitleOptions._results
-        let titleSelecionado = options.filter(e => e.nativeElement.classList.value.includes("option-link-hover"))[0].nativeElement.textContent
-        this.searchInput = titleSelecionado
-        this.buscar(titleSelecionado)
+    //SE NÃO FOR SETA PRA BAIXO OU PRA CIMA:
+    if((evento.keyCode !== 40 && evento.keyCode !== 38)) {
 
-      }
 
+      //CONFORME O USUÁRIO DIGITA: (ou: se o input não está vazio mas a tecla apertada NÃO for enter)
       if(evento.target.value !== '' && evento.keyCode !== 13){
-        this.titleOptions = []
-        this.isHovered = []
-        let listaDeACordes:any[] = Object.assign([],this.chords)
+        this.titleOptions = [] //esvazia a variável que guarda as opções de nome de acorde/cifra
+        this.isHovered = [] //esvazia o array de booleans que marca qual li está destacada
+        let listaDeACordes:any[] = Object.assign([],this.chords) //cria uma cópia do array de acordes que veio do database
+
+        //cria uma variável contendo apenas os títulos (ou cifras) dos acordes (.map()), filtra pelos que contém o que está digitado no input (1º .flter()) e depois remove duplicatas (2º .filter())
         let listaFiltrada:any[] = listaDeACordes.map(e => e.title).filter(e => e.includes(evento.target.value)).filter((obj, index, self) => index===self.indexOf(obj)) //segundo filtro remove duplicatas
         
+        //para cada item na listaFiltrada
         listaFiltrada.forEach(titleOption => {
-          this.titleOptions.push(titleOption)
-          this.isHovered.push(false)
+          this.titleOptions.push(titleOption) //enviar o item para o array de titleOptions
+          this.isHovered.push(false) //enviar um false para o array de li destacada (nenhuma li está destacada por enquanto)
         })
       }
 
+     
+      //SE HÁ OPÇÕES DISPONÍVEIS NA LISTA DE CIFRAS (OU TÍTULOS DE ACORDE) E O USUÁRIO APERTAR ***ENTER***:
+      if(this.titleOptions.length > 0 && evento.keyCode == 13) {
+        
+        let options:any[] = this.chordTitleOptions._results //opções que aparecem em lista para escolher
+        let titleSelecionado:string = '' //opção escolhida que será enviada para a função de buscar acorde
+
+        //se houver alguma opção destacada (com a classe 'option-link-hover' - opção fica com background destacando):
+        if(options.filter(e => e.nativeElement.classList.value.includes("option-link-hover"))[0] !== undefined){
+          titleSelecionado = options.filter(e => e.nativeElement.classList.value.includes("option-link-hover"))[0].nativeElement.textContent //variável titleSelecionado será o conteúdo de texto da li que tá com a classe de destaque
+          this.searchInput = titleSelecionado //o conteúdo interno do input passa a ser tb o conteúdo em texto da li que ta com a classe de destaque
+          this.buscar(titleSelecionado) //chamar função de buscar acorde passando a cifra selecionada
+
+        //se não houver nenhuma opção destacada:  
+        } else {
+          let temOptionIgualAoInput:boolean = false
+          
+          for(var i= 0; i < options.length; i++){ //verificar se temos alguma opção que seja exatamente o que tá no input (o que o usuário digitou antes de apertar enter)
+            if(options[i].nativeElement.textContent == this.searchInput){ //
+              temOptionIgualAoInput = true
+              titleSelecionado = options[i].nativeElement.textContent //variável titleSelecionado passa a ser a opçao que corresponde exatamente ao que está escrito no input
+            }             
+          }
+
+          //se temos opção igual ao que está escrito no input:
+          if(temOptionIgualAoInput == true) {
+            this.buscar(titleSelecionado)
+
+          //se não temos opção igual ao que está escrito no input  
+          } else {
+            titleSelecionado = options[0].nativeElement.textContent //titleSelecionado passa a ser a primeira opção da lista
+            this.searchInput = options[0].nativeElement.textContent //input é atualizado tb com o mesmo valor
+            this.buscar(titleSelecionado)
+          }
+        }
+        
+      }
+
+     
+      //SE O INPUT ESTIVER VAZIO
       if(evento.target.value == ''){
-        this.titleOptions = []
-        this.isHovered = []
+        this.titleOptions = [] //esvaziar array de opções
+        this.isHovered = [] //esvaziar array de li destacada
       } 
     }
 

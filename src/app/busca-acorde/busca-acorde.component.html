@@ -24,7 +24,7 @@
 
     <div *ngIf="doneGettingChords && errorMessageTitle.length == 0">
       <!-- Digite o nome de um acorde: <input style="width: 130px;" (keyup)="buscar($event)" type="text"> -->  
-      Digite o nome de um acorde: <input [(ngModel)]="searchInput" (keydown)="preSearchPart2($event)" (keyup)="preSearch($event)" style="width: 133px;" type="text">
+      Digite o nome de um acorde: <input [(ngModel)]="searchInput" (keydown)="setHighlitedOption($event)" (keyup)="setTitleOptions($event)" style="width: 133px;" type="text">
       
       <div *ngIf="titleOptions.length > 0" class="buscador-options">
         <ul style="margin: 0; padding: 0;">
