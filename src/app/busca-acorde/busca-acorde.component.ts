@@ -387,8 +387,7 @@ export class BuscaAcordeComponent implements OnInit {
                 this.chords.push(chord) //recolocar o acorde no array this.chords (para que possa ser encontrado em nova busca)
                 this.chords.sort((a:any,b:any) => (a.ordenadorMaiores > b.ordenadorMaiores) ? 1 : -1) //reclassificar os acordes
               }
-
-              console.log(this.chordsSelecionados)
+              
               this._generateChord.qtde = this.chordsSelecionados.length + 1
 
               //LIMPAR E RECONSTRUIR O CHART DE ACORDES:
