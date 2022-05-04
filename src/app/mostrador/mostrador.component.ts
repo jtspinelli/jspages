@@ -54,7 +54,7 @@ export class MostradorComponent implements OnInit {
   printarAcordes() {
     this.chordsQuantity = this.chords.length
     this.chords.forEach((chord:any) => {
-      let SVG = this._generateChordsService.SVGchord_gerarAcorde_aceitaPestanaS(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+      let SVG = this._generateChordsService.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
       document.getElementById("pool")?.appendChild(SVG)
       this.chordsPool.nativeElement.lastChild.classList.add('destacar')
       
@@ -97,7 +97,7 @@ export class MostradorComponent implements OnInit {
     if(this.filteredChords.length > 0) {
       this.chordsPool.nativeElement.innerHTML = ''
       this.filteredChords.forEach((chord:any) => {
-        let SVG = this._generateChordsService.SVGchord_gerarAcorde_aceitaPestanaS(chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+        let SVG = this._generateChordsService.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
         document.getElementById("pool")?.appendChild(SVG)
         this.chordsPool.nativeElement.lastChild.classList.add('destacar')
         
