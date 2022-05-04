@@ -4,12 +4,16 @@ import { HttpClient } from '@angular/common/http';
 import { GenerateChordService } from '../generate-chord.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
+import { copyImageToClipboard } from 'copy-image-clipboard'
 
 @Component({
   selector: 'app-busca-acorde',
   templateUrl: './busca-acorde.component.html',
   styleUrls: ['./busca-acorde.component.css']
 })
+
+
+///<reference path=!>
 export class BuscaAcordeComponent implements OnInit {
 
   @ViewChildren("searchResult") searchResults:any
@@ -478,21 +482,49 @@ export class BuscaAcordeComponent implements OnInit {
     a.click()
   }
 
-  downloadChordChartAsPNG() {
-    let div = document.getElementById("selecionados")
+  
+
+  downloadChordChartAsImage(clipboard:boolean) {    
+    let div = document.getElementById("selected-container")
+
     let a = document.createElement("a")
     let uri = ""
+   
 
     if(div) {
-      html2canvas(div).then(canvas => {
-        a.download = "imagefile"
-        uri = canvas.toDataURL("image/png")
-        a.href = uri
-        a.click()
+      
+      div.children[0].classList.remove("selecionados")
+
+      html2canvas(div,{scale:4}).then(canvas => {
+        if(clipboard == false) {
+          a.download = "imagefile"
+          uri = canvas.toDataURL("image/png")
+          a.href = uri
+          a.click()
+        } else {
+          
+          canvas.toBlob(blob => {
+            if(blob){
+              uri = canvas.toDataURL("image/png")
+              copyImageToClipboard(uri).then(() => {                
+                
+              })
+            }
+            
+            
+          })
+        }
+        
       })
+
+      div.children[0].classList.add("selecionados")
+      
+           
     }
    
   }
+
+ 
 
   setSVGchordChart() {
     //let acordesPorLinha:number = parseInt(evento.target.value)
@@ -617,14 +649,14 @@ export class BuscaAcordeComponent implements OnInit {
 
     let url = "https://jonathanspinelli.com/_functions/AvenirFont"
 
-    this.selecionados.nativeElement.appendChild(style)
+   // this.selecionados.nativeElement.appendChild(style)
 
-   /*  this.http.get(url).toPromise().then((data:any) => {
+    this.http.get(url).toPromise().then((data:any) => {
       avenirBase64 = data.avenirBase64
-     // style.innerHTML = "@font-face {font-family:'"+ fontFamily + "'; src:url('" + avenirBase64 + "')}"
+     style.innerHTML = "@font-face {font-family:'"+ fontFamily + "'; src:url('" + avenirBase64 + "')}"
      // style.innerHTML = "@font-face {font-family:'Avenir Next LT Pro Editada'; src:url('" + avenirBase64 + "')}"
       this.selecionados.nativeElement.appendChild(style) //enviar a tag <style> pro arquivo SVG
-    }) */
+    })
   }
 
 
@@ -638,7 +670,7 @@ export class BuscaAcordeComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-   this.setarBase64Font()
+  this.setarBase64Font()
   }
 
 }

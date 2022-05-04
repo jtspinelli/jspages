@@ -55,14 +55,17 @@
    <div style="margin-bottom:10px">
      Selecionados para exportar<span *ngIf="chordsSelecionados.length > 0"> (clique em um acorde para removê-lo)</span>:
    </div>
-   
-   <svg #selecionados id="selecionados" class="selecionados" width="47.443932mm" height="55.188648mm" viewBox="0 0 47.443932 55.188648"></svg> 
+   <div id="selected-container" style="max-width:fit-content;">
+      <svg #selecionados id="selecionados" class="selecionados" width="47.443932mm" height="55.188648mm" viewBox="0 0 47.443932 55.188648"></svg> 
+   </div>
     
     <!-- *ngIf="selecionados.children.length > 1" -->
     <div style="margin-top:20px">
       <button *ngIf="chordsSelecionados.length > 0" (click)="downloadChordChartAsSVG()">baixar SVG</button>
+      <button *ngIf="chordsSelecionados.length > 0" (click)="downloadChordChartAsImage(false)" style="margin-left:15px;">baixar png</button>
+      <button *ngIf="chordsSelecionados.length > 0" (click)="downloadChordChartAsImage(true)" style="margin-left:15px;"> <span>copiar</span> </button>
 
-      <div *ngIf="selecionados.children.length > 5">
+      <div *ngIf="selecionados.children.length > 5" style="margin-top:15px;">
             Acordes por linha: 
         <!-- <input (change)="setSVGchordChart($event)" type="number" max="6" min="3"> -->
         
