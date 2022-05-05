@@ -13,7 +13,6 @@ import { copyImageToClipboard } from 'copy-image-clipboard'
 })
 
 
-///<reference path=!>
 export class BuscaAcordeComponent implements OnInit {
 
   @ViewChildren("searchResult") searchResults:any
@@ -473,7 +472,12 @@ export class BuscaAcordeComponent implements OnInit {
   }
 
   downloadChordChartAsSVG(){
-    let source = new XMLSerializer().serializeToString(this.selecionados.nativeElement)
+    let svgElementCopy = this.selecionados.nativeElement.cloneNode(true)
+    for(var i = 1; i < svgElementCopy.children.length; i++) {
+      svgElementCopy.children[i].children[2].remove() //remover retângulos auxiliares que só são usados por alicar o outline on hover
+    }
+
+    let source = new XMLSerializer().serializeToString(svgElementCopy)
     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
     let url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source)
     let a = document.createElement("a")
