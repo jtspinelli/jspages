@@ -1,6 +1,6 @@
 <div style="display: flex;">
     <div style="flex-grow: 1">
-        <h2>Qtde de acordes: <span *ngIf="!loadingChords && !reloadingChords">{{ chordsQuantity }}</span> </h2>
+        <h2>Qtde de acordes: <span *ngIf="!loadingChords">{{ chordsQuantity }}</span> </h2>
     </div>
 
     <div style="display:flex; justify-content:end; flex-grow: 1;text-align: right; margin-right: 200px; margin-top: 30px;">  
@@ -28,9 +28,6 @@
     </div>
 </div>
 
-<div *ngIf="reloadingChords">
-   <img width="100px" src="assets/spinning-loading.gif" alt=""> 
-</div>
 
 
-<div #chordsPool [ngClass]="{'hidden':loadingChords || reloadingChords}" class="inline" id="pool"></div>
+<div #chordsPool [ngClass]="{'hidden':loadingChords}" class="inline" id="pool"></div>

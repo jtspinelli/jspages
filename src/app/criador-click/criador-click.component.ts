@@ -1210,7 +1210,7 @@ export class CriadorClickComponent implements OnInit {
     })
 
 
-    let acorde = this._generateChordService.SVGchord_gerarAcorde(false,1,'customChord',this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
+    let acorde = this._generateChordService.SVGchord_gerarAcorde(false,1,'customChord',this.newChordName,'customType',this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
     acorde.classList.add("destacar")
 
     document.getElementById("acordeNovo")?.firstChild?.remove()
@@ -1269,7 +1269,7 @@ export class CriadorClickComponent implements OnInit {
     let fingers = Object.assign([],this.fingers)
     let footer = Object.assign([],this.newChordFooter)
    
-    let customChordg = this._generateChordService.SVGchord_gerarAcorde(true,qtde,'customChord'+customId,this.newChordName,this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
+    let customChordg = this._generateChordService.SVGchord_gerarAcorde(true,qtde,'customChord'+customId,this.newChordName,'customType',this.fingers,this.newChordFooter,pestanaInstr,this.newChordPosition)
     let customChord = {g:customChordg, structure:{
       dedos:fingers,
       footer:footer,
@@ -1284,7 +1284,7 @@ export class CriadorClickComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let acorde = this._generateChordService.SVGchord_gerarAcorde(false,1,'customChord','',[],this.newChordFooter,[])
+    let acorde = this._generateChordService.SVGchord_gerarAcorde(false,1,'customChord','','',[],this.newChordFooter,[])
     acorde.classList.add("destacar")
 
     document.getElementById("acordeNovo")?.firstChild?.remove()

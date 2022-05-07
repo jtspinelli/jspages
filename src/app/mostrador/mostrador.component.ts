@@ -14,7 +14,6 @@ export class MostradorComponent implements OnInit {
   chords:any[] = []
   chordsTypes:any[] = []
   loadingChords:boolean = true
-  reloadingChords:boolean = false
 
   filteredChords:any[] = []
   tagFilterActive:boolean[] = []
@@ -29,7 +28,6 @@ export class MostradorComponent implements OnInit {
   getChords() {
     this._generateChordsService.getChords().then(data => {
       this.chords = data
-
       //setar array com os tipos de acorde
       let tipos = [... new Set(this.chords.map(e => {if (e.tipo == undefined) {return 'M'}else {
         return e.tipo
@@ -56,67 +54,70 @@ export class MostradorComponent implements OnInit {
   printarAcordes() {
     this.chordsQuantity = this.chords.length
     this.chords.forEach((chord:any) => {
-      let SVG = this._generateChordsService.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+      let SVG = this._generateChordsService.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.tipo,chord.dedos,chord.footer,chord.pestana,chord.position)
       document.getElementById("pool")?.appendChild(SVG)
       this.chordsPool.nativeElement.lastChild.classList.add('destacar')
       
     })
     setTimeout(() => {
       this.loadingChords = false
-      this.reloadingChords = false
     },2000)
     
   }
 
+  selectedTypes:string[] = []
+
   filterChords(index:number) {
-    this.reloadingChords = true
     let clickedType = this.chordsTypes[index].code
 
     if(this.tagFilterActive[index] == false) {
       this.tagFilterActive[index] = !this.tagFilterActive[index]
-      let filtro:any[] = []
+      this.selectedTypes.push(clickedType)
 
-      if(index > 0) {      
-        filtro = this.chords.filter(e => e.tipo == clickedType)
-      } else {
-        filtro = this.chords.filter(e => !e.tipo)            
+      let svgChords:any[] = this.chordsPool.nativeElement.children
+      
+      for(var i = 0; i < svgChords.length; i++){
+        if(this.selectedTypes.includes(svgChords[i].getAttribute("chord-type")) ){
+          svgChords[i].classList.remove("hidden")
+        } else {
+          svgChords[i].classList.add("hidden")
+        }
       }
 
-      filtro.forEach(item => {
-        this.filteredChords.push(item)
-      })
-      this.chordsQuantity = this.filteredChords.length
+      let hiddenCount = this.chordsPool.nativeElement.getElementsByClassName("hidden").length
+      this.chordsQuantity = this.chords.length - hiddenCount
+     
+
     } else {
       this.tagFilterActive[index] = !this.tagFilterActive[index]
-      let qtde = 0
-      let firstItem
-      if(index > 0) {
-        qtde = this.filteredChords.filter(e => e.tipo == clickedType).length
-        firstItem = this.filteredChords.map(e => e.tipo).indexOf(clickedType)    
-        this.filteredChords.splice(firstItem,qtde)
-      } else {
-        qtde = this.filteredChords.filter(e => !e.tipo).length
-        firstItem = this.filteredChords.map(e => e.tipo).indexOf(undefined) 
-        this.filteredChords.splice(firstItem,qtde)
-      }    
-      this.chordsQuantity = this.filteredChords.length  
+      
+      let typeToRemoveIndex = this.selectedTypes.indexOf(clickedType)
+      this.selectedTypes.splice(typeToRemoveIndex,1)
+
+      let svgChords:any[] = this.chordsPool.nativeElement.children
+      
+      for(var i = 0; i < svgChords.length; i++){
+        if(this.selectedTypes.includes(svgChords[i].getAttribute("chord-type")) ){
+          svgChords[i].classList.remove("hidden")
+        } else {
+          svgChords[i].classList.add("hidden")
+        }
+      }
+
+      let hiddenCount = this.chordsPool.nativeElement.getElementsByClassName("hidden").length
+      this.chordsQuantity = this.chords.length - hiddenCount
+
+
     }
 
-    if(this.filteredChords.length > 0) {
-      this.chordsPool.nativeElement.innerHTML = ''
-      this.filteredChords.forEach((chord:any) => {
-        let SVG = this._generateChordsService.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
-        document.getElementById("pool")?.appendChild(SVG)
-        this.chordsPool.nativeElement.lastChild.classList.add('destacar')
-        
-      })
-      setTimeout(() => {
-        this.reloadingChords = false
-      },1000)
-    } else {
-      this.chordsPool.nativeElement.innerHTML = ''
-      this.printarAcordes()
-    }    
+    if(this.selectedTypes.length == 0){
+      let svgChords:any[] = this.chordsPool.nativeElement.children      
+      for(var i = 0; i < svgChords.length; i++){
+        svgChords[i].classList.remove("hidden")      
+      }
+      this.chordsQuantity = this.chords.length
+    }
+ 
   }
 
   navigate(page:string){

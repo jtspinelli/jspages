@@ -175,7 +175,7 @@ export class BuscaAcordeComponent implements OnInit {
         if(chord.pestana) { //se tiver info de pestana (último campo obrigatório)
 
           //CRIAR SVG DO ACORDE USANDO FUNÇÃO DO SERVIÇO GenerateChordService
-          let SVGchord = this._generateChord.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+          let SVGchord = this._generateChord.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.tipoTitle,chord.dedos,chord.footer,chord.pestana,chord.position)
           if(SVGchord){
             document.getElementById("vejamos")?.appendChild(SVGchord) // e jogar para a div com id="vejamos"
           }
@@ -205,7 +205,7 @@ export class BuscaAcordeComponent implements OnInit {
             }
             
             //CRIAR ELEMENTO <g> DO ACORDE PARA COLOCAR DENTRO DO SVG BASE
-            let selectedChord = this._generateChord.SVGchord_gerarAcorde(true,qtde,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+            let selectedChord = this._generateChord.SVGchord_gerarAcorde(true,qtde,chord.id,chord.title,chord.tipoTitle,chord.dedos,chord.footer,chord.pestana,chord.position)
             
             //criar um retângulo para ser uma espécie de 'frame' do acorde ou do elemento <g> dentro do SVG
             let rect = document.createElementNS("http://www.w3.org/2000/svg","rect")
@@ -352,7 +352,7 @@ export class BuscaAcordeComponent implements OnInit {
             }
             
             //CRIAR ELEMENTO <g> DO ACORDE PARA COLOCAR DENTRO DO SVG BASE
-            let selectedChord = this._generateChord.SVGchord_gerarAcorde(true,qtde,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
+            let selectedChord = this._generateChord.SVGchord_gerarAcorde(true,qtde,chord.id,chord.title,chord.tipoTitle,chord.dedos,chord.footer,chord.pestana,chord.position)
             
             //criar um retângulo para ser uma espécie de 'frame' do acorde ou do elemento <g> dentro do SVG
             let rect = document.createElementNS("http://www.w3.org/2000/svg","rect")

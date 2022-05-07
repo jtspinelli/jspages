@@ -208,7 +208,7 @@ export class GenerateChordService {
   }
   
   //FUNÇÃO QUE GERA (RETORNA) O ACORDE EM FORMATO <g> ou <svg>
-  SVGchord_gerarAcorde(onlyG:boolean, tamanhoDoChart:number,id:string, title:string, dedos:number[][], footer:string[],pestanaInstr:number[][], position? :number) {
+  SVGchord_gerarAcorde(onlyG:boolean, tamanhoDoChart:number,id:string, title:string, type:string, dedos:number[][], footer:string[],pestanaInstr:number[][], position? :number) {
     let originalTitle = title
     let chord = document.createElementNS("http://www.w3.org/2000/svg", "g")
     chord.setAttribute("id",id)
@@ -216,9 +216,10 @@ export class GenerateChordService {
     let base:SVGElement
     if(position) {
       if(onlyG == true){
-         base = this.SVGchord_gerarDiagramaBase(id,position,true)
+        base = this.SVGchord_gerarDiagramaBase(id,position,true)
       } else {
         base = this.SVGchord_gerarDiagramaBase(id,position,false)
+        base.setAttribute("chord-type",type)
       }
      
     } else {
@@ -226,6 +227,7 @@ export class GenerateChordService {
         base = this.SVGchord_gerarDiagramaBase(id,1,true)
       } else {
         base = this.SVGchord_gerarDiagramaBase(id,1,false)
+        base.setAttribute("chord-type",type)
       }
       
     }
