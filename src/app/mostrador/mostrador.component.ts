@@ -14,6 +14,7 @@ export class MostradorComponent implements OnInit {
   chords:any[] = []
   chordsTypes:any[] = []
   loadingChords:boolean = true
+  reloadingChords:boolean = false
 
   filteredChords:any[] = []
   tagFilterActive:boolean[] = []
@@ -43,7 +44,8 @@ export class MostradorComponent implements OnInit {
       })
 
       this.printarAcordes()
-      this.loadingChords = false
+      
+      
     }).catch(err => {
       this.errorMessageTitle = "Erro desconhecido ao buscar acordes no database =/"
       this.errorMessage = "Aguarde uns instantes e tente novamente atualizando a página."
@@ -59,9 +61,15 @@ export class MostradorComponent implements OnInit {
       this.chordsPool.nativeElement.lastChild.classList.add('destacar')
       
     })
+    setTimeout(() => {
+      this.loadingChords = false
+      this.reloadingChords = false
+    },2000)
+    
   }
 
   filterChords(index:number) {
+    this.reloadingChords = true
     let clickedType = this.chordsTypes[index].code
 
     if(this.tagFilterActive[index] == false) {
@@ -102,6 +110,9 @@ export class MostradorComponent implements OnInit {
         this.chordsPool.nativeElement.lastChild.classList.add('destacar')
         
       })
+      setTimeout(() => {
+        this.reloadingChords = false
+      },1000)
     } else {
       this.chordsPool.nativeElement.innerHTML = ''
       this.printarAcordes()

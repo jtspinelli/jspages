@@ -56,3 +56,7 @@
 .active-tag .code {
     border-color: white;
 }
+
+.hidden {
+    display: none;
+}

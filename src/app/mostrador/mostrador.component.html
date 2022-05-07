@@ -1,6 +1,6 @@
 <div style="display: flex;">
     <div style="flex-grow: 1">
-        <h2>Qtde de acordes: {{ chordsQuantity }}</h2>
+        <h2>Qtde de acordes: <span *ngIf="!loadingChords && !reloadingChords">{{ chordsQuantity }}</span> </h2>
     </div>
 
     <div style="display:flex; justify-content:end; flex-grow: 1;text-align: right; margin-right: 200px; margin-top: 30px;">  
@@ -21,14 +21,16 @@
     <img style="width:100px; margin-top: 20px;" src="assets/face-palm.jpg" alt="">
 </div>
 
-<div class="chords-types">
+<div [ngClass]="{'hidden':loadingChords}" class="chords-types">
     <div class="chords-types-item" [ngClass]="{'active-tag':tagFilterActive[i]}" *ngFor="let type of chordsTypes; let i = index" (click)="filterChords(i)">
         <div class="code">{{type.code}}</div>
         <div class="title">{{type.title}}</div>
     </div>
 </div>
 
+<div *ngIf="reloadingChords">
+   <img width="100px" src="assets/spinning-loading.gif" alt=""> 
+</div>
 
 
-
-<div #chordsPool class="inline" id="pool"></div>
+<div #chordsPool [ngClass]="{'hidden':loadingChords || reloadingChords}" class="inline" id="pool"></div>

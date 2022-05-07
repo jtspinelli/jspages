@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import * as opentype from 'opentype.js'
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,8 @@ export class GenerateChordService {
   constructor(private http:HttpClient) { }
 
   fontFamily:string = 'Avenir Atelie do Violão Bold'
+  fontSize = 6.2
+  fontUrl = 'assets/AvenirNextLTProEditada-Bold009.otf'
 
   qtde = 1
 
@@ -124,9 +127,24 @@ export class GenerateChordService {
         trastes_position.setAttribute(this.positionLabels[i],this.positionValues[i])
       }
       let positionNumber = position.toString() + "ª"
+
       trastes_positionText.textContent = positionNumber
-      trastes_position.appendChild(trastes_positionText)
-      gDB_Trastes.appendChild(trastes_position)
+      //trastes_position.appendChild(trastes_positionText)
+     // gDB_Trastes.appendChild(trastes_position)
+
+     //criar texto de posição como <path>:
+     opentype.load(this.fontUrl,(err:any, font:any) => {
+       if(err){}else {
+         let positionPath = font.getPath(positionNumber,0,18,this.fontSize*0.9)
+         let positionPathD = positionPath.toSVG().substring(9,positionPath.toSVG().length-3)
+
+         let positionAsSvgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
+         positionAsSvgPath.setAttribute("d",positionPathD)
+         positionAsSvgPath.setAttribute("style","fill:#333333;")
+
+         gDB_Trastes.appendChild(positionAsSvgPath)
+       }
+     })
     }     
   
   
@@ -191,13 +209,11 @@ export class GenerateChordService {
   
   //FUNÇÃO QUE GERA (RETORNA) O ACORDE EM FORMATO <g> ou <svg>
   SVGchord_gerarAcorde(onlyG:boolean, tamanhoDoChart:number,id:string, title:string, dedos:number[][], footer:string[],pestanaInstr:number[][], position? :number) {
-  
+    let originalTitle = title
     let chord = document.createElementNS("http://www.w3.org/2000/svg", "g")
     chord.setAttribute("id",id)
 
-    let fontFamily = this.fontFamily
-
-    let base
+    let base:SVGElement
     if(position) {
       if(onlyG == true){
          base = this.SVGchord_gerarDiagramaBase(id,position,true)
@@ -241,7 +257,7 @@ export class GenerateChordService {
     acorde.setAttribute("id","ACORDE")
 
     //TITULO
-      let text = document.createElementNS("http://www.w3.org/2000/svg","text")
+      /* let text = document.createElementNS("http://www.w3.org/2000/svg","text")
       let textLabels = ["xml:space","style","x","y","text-anchor"]
       let posicionamento:string = (50/tamanhoDoChart) + "%"
       let textValues = [
@@ -283,11 +299,9 @@ export class GenerateChordService {
     } else {
       textContent.textContent = title
       text.appendChild(textContent)
-    }
+    } */
     
-
-    
-    acorde.appendChild(text)
+    //acorde.appendChild(text)
 
   //LOGICA DEDOS
 
@@ -398,8 +412,7 @@ export class GenerateChordService {
             let casa = coordenadasDoDedo_Y.filter(e => e.casa == dedo[1])[0].valor
 
             let path = desenhosNumeros.filter(e => e.numero == dedo[2])[0].desenho
-            let d = "m " + corda + ", " + casa + path
-            
+            let d = "m " + corda + ", " + casa + path            
             
             
             // let numberLabels = ["d","style","inkscape:label"]
@@ -517,9 +530,137 @@ export class GenerateChordService {
       let translateX:string = ((baseValue*tamanhoDoChart)-baseValue).toString()
       chord.setAttribute("transform","translate(" + translateX + ",0)")
 
+
+      //GERAR TÍTULO EM FORMATO <path>
+      opentype.load(this.fontUrl,(err:any, font:any) => {
+        if(err){         
+        }else {
+          if(originalTitle.includes("74")){ 
+            let seteIndex = originalTitle.indexOf("7")
+          let quatroIndex = originalTitle.indexOf("4")
+
+          let titlePrefix = originalTitle.substring(0,seteIndex)
+          let titleResto = originalTitle.substring(quatroIndex+1,originalTitle.length)      
+
+          let titlePrefixPath = font.getPath(titlePrefix,0,8,this.fontSize)
+          let prefixWidth = titlePrefixPath.getBoundingBox().x2 - titlePrefixPath.getBoundingBox().x1
+
+
+          let setePath = font.getPath("7",prefixWidth+0.5,5,this.fontSize*0.8)
+          let quatropath = font.getPath("4",prefixWidth+0.5,9.5,this.fontSize*0.8)
+          let titleRestoPath = font.getPath(titleResto,prefixWidth+4,7.5,this.fontSize)
+
+
+          let titlePrefixPathAsString = titlePrefixPath.toSVG()
+          let titlePrefixPathD = titlePrefixPathAsString.substring(9,titlePrefixPathAsString.length-3)
+
+          let setePathD = setePath.toSVG().substring(9,setePath.toSVG().length-3)
+          let quatroPathD = quatropath.toSVG().substring(9, quatropath.toSVG().length-3)
+          let titleRestoPathD = titleRestoPath.toSVG().substring(9, titleRestoPath.toSVG().length-3)
+
+          let g = document.createElementNS("http://www.w3.org/2000/svg","g")
+          g.setAttribute("id","título")
+
+          let titleAsSvgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
+          titleAsSvgPath.setAttribute("d",titlePrefixPathD+setePathD+quatroPathD+titleRestoPathD)
+
+          
+          let restoWidth = titleRestoPath.getBoundingBox().x2 - titleRestoPath.getBoundingBox().x1
+          let titleAsSvgPathWidth = prefixWidth + restoWidth + 4
+
+          titleAsSvgPath.setAttribute("style","fill:#333333;")
+          titleAsSvgPath.setAttribute("transform","translate("+ (23.5-(titleAsSvgPathWidth/2)) + ",0)")
+
+          g.appendChild(titleAsSvgPath)
+
+          chord.children[1].insertBefore(g,chord.children[1].firstChild)
+          } else {
+            let path = font.getPath(originalTitle,0,8.5,this.fontSize)
+            let pathWidth = path.getBoundingBox().x2 - path.getBoundingBox().x1
+            let pathElementAsString = path.toSVG()
+            let pathD = pathElementAsString.substring(9,pathElementAsString.length-3)
+
+            let g = document.createElementNS("http://www.w3.org/2000/svg","g")
+            g.setAttribute("id","título")
+            let svgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
+            svgPath.setAttribute("d",pathD)
+            svgPath.setAttribute("style","fill:#333333;")
+            svgPath.setAttribute("transform","translate("+ (23.5-(pathWidth/2)) + ",0)")
+
+            g.appendChild(svgPath)
+            chord.children[1].insertBefore(g,chord.children[1].firstChild)
+            
+          }
+        }
+      })
+
+
       return(chord)
     } else {
       base.appendChild(acorde)
+
+      //GERAR TÍTULO EM FORMATO <path>
+      opentype.load(this.fontUrl,(err:any, font:any) => {
+        if(err){         
+        }else {
+          if(originalTitle.includes("74")){ 
+            let seteIndex = originalTitle.indexOf("7")
+            let quatroIndex = originalTitle.indexOf("4")
+
+            let titlePrefix = originalTitle.substring(0,seteIndex)
+            let titleResto = originalTitle.substring(quatroIndex+1,originalTitle.length)
+
+            let titlePrefixPath = font.getPath(titlePrefix,0,8,this.fontSize)
+            let prefixWidth = titlePrefixPath.getBoundingBox().x2 - titlePrefixPath.getBoundingBox().x1
+
+
+            let setePath = font.getPath("7",prefixWidth+0.5,5,this.fontSize*0.8)
+            let quatropath = font.getPath("4",prefixWidth+0.5,9.5,this.fontSize*0.8)
+            let titleRestoPath = font.getPath(titleResto,prefixWidth+4,7.5,this.fontSize)
+
+
+            let titlePrefixPathAsString = titlePrefixPath.toSVG()
+            let titlePrefixPathD = titlePrefixPathAsString.substring(9,titlePrefixPathAsString.length-3)
+
+            let setePathD = setePath.toSVG().substring(9,setePath.toSVG().length-3)
+            let quatroPathD = quatropath.toSVG().substring(9, quatropath.toSVG().length-3)
+            let titleRestoPathD = titleRestoPath.toSVG().substring(9, titleRestoPath.toSVG().length-3)
+
+            let g = document.createElementNS("http://www.w3.org/2000/svg","g")
+            g.setAttribute("id","título")
+
+            let titleAsSvgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
+            titleAsSvgPath.setAttribute("d",titlePrefixPathD+setePathD+quatroPathD+titleRestoPathD)
+
+            
+            let restoWidth = titleRestoPath.getBoundingBox().x2 - titleRestoPath.getBoundingBox().x1
+            let titleAsSvgPathWidth = prefixWidth + restoWidth + 4
+
+            titleAsSvgPath.setAttribute("style","fill:#333333;")
+            titleAsSvgPath.setAttribute("transform","translate("+ (23.5-(titleAsSvgPathWidth/2)) + ",0)")
+
+            g.appendChild(titleAsSvgPath)
+
+            base.children[1].insertBefore(g,base.children[1].firstChild)
+          } else {
+            let path = font.getPath(originalTitle,0,8.5,this.fontSize)
+            let pathWidth = path.getBoundingBox().x2 - path.getBoundingBox().x1
+            let pathElementAsString = path.toSVG()
+            let pathD = pathElementAsString.substring(9,pathElementAsString.length-3)
+
+            let g = document.createElementNS("http://www.w3.org/2000/svg","g")
+            g.setAttribute("id","título")
+            let svgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
+            svgPath.setAttribute("d",pathD)
+            svgPath.setAttribute("style","fill:#333333;")
+            svgPath.setAttribute("transform","translate("+ (23.5-(pathWidth/2)) + ",0)")
+
+            g.appendChild(svgPath)
+            base.children[1].insertBefore(g,base.children[1].firstChild)
+            
+          }
+        }
+      })
       return(base)
     }
 

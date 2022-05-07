@@ -1,3 +1,4 @@
+declare var require:any
 import { Component, OnInit, ViewChildren, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -5,7 +6,7 @@ import { GenerateChordService } from '../generate-chord.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 import { copyImageToClipboard } from 'copy-image-clipboard'
-
+import * as opentype from 'opentype.js'
 @Component({
   selector: 'app-busca-acorde',
   templateUrl: './busca-acorde.component.html',
@@ -14,6 +15,7 @@ import { copyImageToClipboard } from 'copy-image-clipboard'
 
 
 export class BuscaAcordeComponent implements OnInit {
+  
 
   @ViewChildren("searchResult") searchResults:any
   @ViewChildren("chordTitleOptions") chordTitleOptions:any
@@ -51,6 +53,8 @@ export class BuscaAcordeComponent implements OnInit {
       this.errorMessage = "Aguarde uns instantes e tente novamente atualizando a página."
     })
   }
+
+ 
 
   setHighlitedOption(evento:any) {
     //metodo chamado no (keydown) do input (assim funciona se a seta pra baixo (40) ou pra cima (38) ficar apertada)
@@ -172,7 +176,10 @@ export class BuscaAcordeComponent implements OnInit {
 
           //CRIAR SVG DO ACORDE USANDO FUNÇÃO DO SERVIÇO GenerateChordService
           let SVGchord = this._generateChord.SVGchord_gerarAcorde(false,1,chord.id,chord.title,chord.dedos,chord.footer,chord.pestana,chord.position)
-          document.getElementById("vejamos")?.appendChild(SVGchord) // e jogar para a div com id="vejamos"
+          if(SVGchord){
+            document.getElementById("vejamos")?.appendChild(SVGchord) // e jogar para a div com id="vejamos"
+          }
+          
 
           this.searchResults._results[0].nativeElement.children[0].lastChild.classList.add('destacar')
 
@@ -208,10 +215,15 @@ export class BuscaAcordeComponent implements OnInit {
             rect.setAttribute("height","97%")
             
             rect.setAttribute("y","1") //leve deslocada para baixo
-            selectedChord.appendChild(rect)
+            if(selectedChord){
+              selectedChord.appendChild(rect)
 
-            //enviar acorde selecionado para o chord-chart
-            document.getElementById("selecionados")?.appendChild(selectedChord)
+              //enviar acorde selecionado para o chord-chart
+              document.getElementById("selecionados")?.appendChild(selectedChord)
+            }
+            
+
+            
 
             //atualizar a quantidade de acordes na variável do GenerateChordService
             this._generateChord.qtde = this.selecionados.nativeElement.children.length
@@ -353,10 +365,14 @@ export class BuscaAcordeComponent implements OnInit {
             } */
             
             rect.setAttribute("y","1") //leve deslocada para baixo
-            selectedChord.appendChild(rect)
+            if(selectedChord){
+              selectedChord.appendChild(rect)
+              document.getElementById("selecionados")?.appendChild(selectedChord)
+            }
+            
 
             
-            document.getElementById("selecionados")?.appendChild(selectedChord)
+            
 
             //arrumar largura do retângulo (<rect>) de cada acorde
             let width:string = ((100/qtde)-(3/qtde)).toString() + "%"
