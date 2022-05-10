@@ -527,6 +527,7 @@ export class GenerateChordService {
     if(onlyG == true) {
       chord.appendChild(base)
       chord.appendChild(acorde)
+      chord.classList.add("drag-chord")
 
       let baseValue = 47.443932
       let translateX:string = ((baseValue*tamanhoDoChart)-baseValue).toString()

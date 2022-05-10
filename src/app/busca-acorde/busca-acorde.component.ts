@@ -1,4 +1,4 @@
-declare var require:any
+/// <reference path="../clipboard-types.ts" />
 import { Component, OnInit, ViewChildren, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -6,7 +6,8 @@ import { GenerateChordService } from '../generate-chord.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 import { copyImageToClipboard } from 'copy-image-clipboard'
-import * as opentype from 'opentype.js'
+
+
 @Component({
   selector: 'app-busca-acorde',
   templateUrl: './busca-acorde.component.html',
@@ -218,6 +219,8 @@ export class BuscaAcordeComponent implements OnInit {
             if(selectedChord){
               selectedChord.appendChild(rect)
 
+             this.dragAndArrange(chord,selectedChord)
+
               //enviar acorde selecionado para o chord-chart
               document.getElementById("selecionados")?.appendChild(selectedChord)
             }
@@ -340,6 +343,40 @@ export class BuscaAcordeComponent implements OnInit {
 
   }
 
+  draggedIndex:number = 0
+
+  dragAndArrange(chord:any, selectedchord:any) {    
+    let overIndex:number = 0
+
+    selectedchord.addEventListener("dragover",(event:any)=>{
+      event.preventDefault()
+    })
+
+    selectedchord.addEventListener("dragenter", (event:any) => {
+      let idAtual = event.target.parentElement.getAttribute("id")
+      overIndex = this.chordsSelecionados.map(e => e.id).indexOf(idAtual)
+    })
+
+    selectedchord.addEventListener("dragstart", (event:any) => {
+      event.dataTransfer.setData("text",chord.id)
+      this.draggedIndex = this.chordsSelecionados.map(e => e.id).indexOf(this.chordsSelecionados.filter(e => e.title == chord.title)[0].id)
+    })
+
+    selectedchord.addEventListener("drop",(event:any)=> {
+      let acordeArrastadoId = event.dataTransfer.getData("text")
+      if(this.draggedIndex !== overIndex){
+        this.chordsSelecionados.splice(overIndex,0,this.chordsSelecionados.splice(this.draggedIndex,1)[0])
+        while(this.selecionados.nativeElement.children.length > 1){
+          this.selecionados.nativeElement.lastChild.remove()
+        }
+        this.montarSVG()
+        if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
+          this.setSVGchordChart()
+        }
+      }
+    })
+  }
+
   montarSVG(){
     this.chordsSelecionados.forEach((chord:any) => {
       let qtde:number = this.selecionados.nativeElement.children.length
@@ -367,6 +404,7 @@ export class BuscaAcordeComponent implements OnInit {
             rect.setAttribute("y","1") //leve deslocada para baixo
             if(selectedChord){
               selectedChord.appendChild(rect)
+              this.dragAndArrange(chord,selectedChord)
               document.getElementById("selecionados")?.appendChild(selectedChord)
             }
             
@@ -500,6 +538,16 @@ export class BuscaAcordeComponent implements OnInit {
     a.download = "acordes.svg"
     a.href = url
     a.click()
+  }
+
+  async copyChordChartAsSVG(){
+    try {
+      let url = 'assets/pandi.png'
+      const data = await fetch(url)
+      const blob = await data.blob()
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   
@@ -686,7 +734,6 @@ export class BuscaAcordeComponent implements OnInit {
 
   ngOnInit(): void {
     this.getChords()
-
   }
 
   ngAfterViewInit() {

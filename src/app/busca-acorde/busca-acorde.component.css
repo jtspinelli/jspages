@@ -73,4 +73,5 @@ ul {
     padding: 10px;
     border: 1px solid;
     border-radius: 8px;
+    -webkit-user-drag: none;
 }
