@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BuscaAcordeComponent } from '../busca-acorde/busca-acorde.component';
 import { GenerateChordService } from '../generate-chord.service';
 
+
+
 @Component({
   selector: 'app-chord-chart-gen',
   templateUrl: './chord-chart-gen.component.html',
@@ -121,6 +123,9 @@ export class ChordChartGenComponent implements OnInit {
     })
 
   }
+
+  color = 'red'
+
   ngOnInit(): void {
   }
 

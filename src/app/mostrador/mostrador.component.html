@@ -23,7 +23,10 @@
 
 <div [ngClass]="{'hidden':loadingChords}" class="chords-types">
     <div class="chords-types-item" [ngClass]="{'active-tag':tagFilterActive[i]}" *ngFor="let type of chordsTypes; let i = index" (click)="filterChords(i)">
-        <div class="code">{{type.code}}</div>
+        <div class="code" [ngClass]="{'type-sete-quatro':type.code == '74'}"> <span *ngIf="type.code !== '74'">{{type.code}}</span> 
+            <span class="sete" *ngIf="type.code == '74'">7</span>
+            <span class="quatro" *ngIf="type.code == '74'">4</span>
+        </div>
         <div class="title">{{type.title}}</div>
     </div>
 </div>

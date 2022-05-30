@@ -355,6 +355,34 @@ export class BuscaAcordeComponent implements OnInit {
     selectedchord.addEventListener("dragenter", (event:any) => {
       let idAtual = event.target.parentElement.getAttribute("id")
       overIndex = this.chordsSelecionados.map(e => e.id).indexOf(idAtual)
+     /*  if(this.draggedIndex !== overIndex){
+        let indexDifference = this.draggedIndex - overIndex
+        let diminuir = indexDifference * 47.443932
+
+        let translateXAtual = parseFloat(this.selecionados.nativeElement.children[this.draggedIndex+1].getAttribute("transform").split(',')[0].substring(10)) 
+        let translateXAtualEmString = this.selecionados.nativeElement.children[this.draggedIndex+1].getAttribute("transform").split(',')[0].substring(10)
+        console.log(indexDifference, diminuir)
+        console.log("translateX atual em string:",translateXAtualEmString)
+        console.log("translate atual: ",translateXAtual)
+        console.log("vai para:", translateXAtual - diminuir)
+
+        this.selecionados.nativeElement.children[this.draggedIndex+1].setAttribute("transform","translate("+(translateXAtual-diminuir)+",0)")
+
+        let translateXDoItemOver = parseFloat(this.selecionados.nativeElement.children[overIndex+1].getAttribute("transform").split(',')[0].substring(10))
+        this.selecionados.nativeElement.children[overIndex+1].setAttribute("transform","translate(" + (translateXDoItemOver + 47.443932) + ",0)")
+
+        console.log("item do index atual vai para:", translateXDoItemOver + 47.443932)
+
+        if(indexDifference > 1){
+          let count = 1
+          while(count < this.draggedIndex){
+            let temp = parseFloat(this.selecionados.nativeElement.children[overIndex+1+count].getAttribute("transform").split(',')[0].substring(10))
+            this.selecionados.nativeElement.children[overIndex+1+count].setAttribute("transform","translate(" + (temp + 47.443932) + ",0)")
+            count++
+          }
+        }
+      } */
+      
     })
 
     selectedchord.addEventListener("dragstart", (event:any) => {
@@ -363,13 +391,19 @@ export class BuscaAcordeComponent implements OnInit {
     })
 
     selectedchord.addEventListener("drop",(event:any)=> {
-      let acordeArrastadoId = event.dataTransfer.getData("text")
       if(this.draggedIndex !== overIndex){
+
+        //TROCAR LUGAR DO ACORDE ARRASTADO:
         this.chordsSelecionados.splice(overIndex,0,this.chordsSelecionados.splice(this.draggedIndex,1)[0])
+
+        //apagar chart:
         while(this.selecionados.nativeElement.children.length > 1){
           this.selecionados.nativeElement.lastChild.remove()
         }
+        //montar denovo:
         this.montarSVG()
+
+        //chamar função para reorganizar caso tenha opção de "x" acordes por linha
         if(this.chordsSelecionados.length > 4 && parseInt(this.inputAcordesPorLinha) > 0) {
           this.setSVGchordChart()
         }

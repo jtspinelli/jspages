@@ -11,7 +11,7 @@ import { PoolComponent } from './pool/pool.component';
 import { MostradorComponent } from './mostrador/mostrador.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { ChordChartGenComponent } from './chord-chart-gen/chord-chart-gen.component';
-import { CriadorClickComponent } from './criador-click/criador-click.component'
+import { CriadorClickComponent } from './criador-click/criador-click.component';
 
 @NgModule({
   declarations: [

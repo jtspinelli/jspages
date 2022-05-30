@@ -1,10 +1,19 @@
-<h1 class="title">Meus projetos em Angular</h1>
+
+<h1 class="title">Meus projetos em Angular e React</h1>
 
 
 
 <div>
     <ul class="meus-projetos">
-        <li (click)="navigate('cf')">Controle Financeiro </li>
-        <li (click)="navigate('pool')">Gerador de Acordes</li>
+        <!-- <li (click)="navigate('cf')">Controle Financeiro </li> -->
+        <li (click)="showProject('controlefinanceiro')">Controle Financeiro </li>
+        <!-- <li (click)="navigate('pool')">Gerador de Acordes</li> -->
+        <li (click)="showProject('geradordeacordes')">Gerador de Acordes</li>
+        <li (click)="showProject('googlepicker')">Google App Picker</li>
     </ul>
 </div>
+
+
+
+
+<iframe id="iframe" src=""></iframe>

@@ -60,3 +60,20 @@
 .hidden {
     display: none;
 }
+
+.type-sete-quatro {
+    display: grid;
+    position: relative;
+    height: 19px;
+    width: 4%;
+}
+
+.type-sete-quatro .sete {
+    position: absolute;
+    top: -9px;
+}
+
+.type-sete-quatro .quatro {
+    position: absolute;
+    top: 9px;
+}

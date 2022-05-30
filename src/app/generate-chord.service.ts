@@ -19,6 +19,7 @@ export class GenerateChordService {
   dotsColor = '#333333' //original: #333333 (pega os dots e as pestanas)
   footerColor = '#333333' //original: #333333
   positionColor = '#333333' //original: #333333
+  titleColor = "#333333" //original: #333333
 
   pathLabels = ["stroke-linecap", "fill","stroke-linejoin","d","stroke","stroke-width","stroke-opacity","stroke-miterlimit","style"]
   paths = {
@@ -530,7 +531,7 @@ export class GenerateChordService {
       chord.classList.add("drag-chord")
 
       let baseValue = 47.443932
-      let translateX:string = ((baseValue*tamanhoDoChart)-baseValue).toString()
+      let translateX:string = ((baseValue*tamanhoDoChart)-baseValue).toFixed(6).toString()
       chord.setAttribute("transform","translate(" + translateX + ",0)")
 
 
@@ -571,7 +572,7 @@ export class GenerateChordService {
           let restoWidth = titleRestoPath.getBoundingBox().x2 - titleRestoPath.getBoundingBox().x1
           let titleAsSvgPathWidth = prefixWidth + restoWidth + 4
 
-          titleAsSvgPath.setAttribute("style","fill:#333333;")
+          titleAsSvgPath.setAttribute("style","fill:" + this.titleColor + ";")
           titleAsSvgPath.setAttribute("transform","translate("+ (23.5-(titleAsSvgPathWidth/2)) + ",0)")
 
           g.appendChild(titleAsSvgPath)
@@ -587,7 +588,7 @@ export class GenerateChordService {
             g.setAttribute("id","título")
             let svgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
             svgPath.setAttribute("d",pathD)
-            svgPath.setAttribute("style","fill:#333333;")
+            svgPath.setAttribute("style","fill:" + this.titleColor + ";")
             svgPath.setAttribute("transform","translate("+ (23.5-(pathWidth/2)) + ",0)")
 
             g.appendChild(svgPath)
@@ -597,8 +598,8 @@ export class GenerateChordService {
         }
       })
 
-
       return(chord)
+
     } else {
       base.appendChild(acorde)
 
@@ -639,7 +640,7 @@ export class GenerateChordService {
             let restoWidth = titleRestoPath.getBoundingBox().x2 - titleRestoPath.getBoundingBox().x1
             let titleAsSvgPathWidth = prefixWidth + restoWidth + 4
 
-            titleAsSvgPath.setAttribute("style","fill:#333333;")
+            titleAsSvgPath.setAttribute("style","fill:" + this.titleColor + ";")
             titleAsSvgPath.setAttribute("transform","translate("+ (23.5-(titleAsSvgPathWidth/2)) + ",0)")
 
             g.appendChild(titleAsSvgPath)
@@ -655,7 +656,7 @@ export class GenerateChordService {
             g.setAttribute("id","título")
             let svgPath = document.createElementNS("http://www.w3.org/2000/svg","path")
             svgPath.setAttribute("d",pathD)
-            svgPath.setAttribute("style","fill:#333333;")
+            svgPath.setAttribute("style","fill:" + this.titleColor + ";")
             svgPath.setAttribute("transform","translate("+ (23.5-(pathWidth/2)) + ",0)")
 
             g.appendChild(svgPath)
