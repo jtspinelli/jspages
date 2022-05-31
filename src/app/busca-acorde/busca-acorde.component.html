@@ -1,7 +1,10 @@
-<h4 class="linkNextPage" (click)="navigate('pool')"> ← Voltar para o Pool </h4>
+<h3 class="linkNextPage" (click)="navigate('pool')"> ← Voltar para o Pool Viewer </h3>
 
 
-
+<div class="explanation">
+  <p>Selecione acordes do banco de dados e exporte o conjunto como arquivo SVG (vetores) ou PNG (imagem).</p>
+  <p>Você também pode criar novos acordes usando o Criador de Acorde, abaixo, e adicionálo ao conjunto.</p>
+</div>
 
 <div class="flex">
 
@@ -22,7 +25,7 @@
 
 
 
-    <div *ngIf="doneGettingChords && errorMessageTitle.length == 0">
+    <div *ngIf="doneGettingChords && errorMessageTitle.length == 0" style="position: relative;">
       <!-- Digite o nome de um acorde: <input style="width: 130px;" (keyup)="buscar($event)" type="text"> -->  
       Digite o nome de um acorde: <input [(ngModel)]="searchInput" (keydown)="setHighlitedOption($event)" (keyup)="setTitleOptions($event)" style="width: 133px;" type="text">
       

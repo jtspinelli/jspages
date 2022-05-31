@@ -1,5 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono:wght@300&display=swap');
+
 .inline {
     display: inline-block;
+}
+
+.link {
+    font-family: 'Roboto';
+    font-weight: 200;
 }
 
 .link:hover {
@@ -11,7 +18,10 @@
     display: grid; 
     grid-template-columns: repeat(7, 1fr);
     gap: 3px;
-    margin-bottom: 40px;
+   /*  position: sticky;
+    top: 0;
+    padding-bottom: 22px;
+    background-color: white; */
 }
 
 .chords-types-item {
@@ -76,4 +86,30 @@
 .type-sete-quatro .quatro {
     position: absolute;
     top: 9px;
+}
+
+.svg-header {
+    /* font-family: sans-serif; */
+    text-align: center;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.svg-header h1, h2{
+    margin: 0;
+}
+
+.svg-header h2 {
+    font-weight: 100;
+}
+
+.quantifizer {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+}
+
+.sticky-header {
+    background-color: white;
+    position: sticky;
+    top: 0;
+    padding-bottom: 22px;
 }

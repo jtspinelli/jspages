@@ -1,35 +1,45 @@
-<div style="display: flex;">
-    <div style="flex-grow: 1">
-        <h2>Qtde de acordes: <span *ngIf="!loadingChords">{{ chordsQuantity }}</span> </h2>
-    </div>
-
-    <div style="display:flex; justify-content:end; flex-grow: 1;text-align: right; margin-right: 200px; margin-top: 30px;">  
-        <!-- <h3 class="link" (click)="navigate('criador')">Ir para o criador →</h3>
-        <h3 class="link" (click)="navigate('buscador')">Ir para o buscador →</h3> -->
-        <h3 class="link" (click)="navigate('chartgen')">Ir para o criador →</h3>
-    </div>
+<div class="svg-header">
+    <h1>Banco e Gerador de acordes em SVG</h1>
+    <h2>para violão e guitarra</h2>
 </div>
 
-<div *ngIf="loadingChords">
-    <img width="100px" src="assets/spinning-loading.gif" alt="">
-    <p style="font-size:20px">construindo acordes...</p>
-</div>
 
-<div *ngIf="errorMessageTitle.length > 0">
-    <p style="font-size:20px; margin:0 0 5px">{{errorMessageTitle}}</p>
-    <p style="font-size:20px; margin:0">{{errorMessage}}</p>
-    <img style="width:100px; margin-top: 20px;" src="assets/face-palm.jpg" alt="">
-</div>
-
-<div [ngClass]="{'hidden':loadingChords}" class="chords-types">
-    <div class="chords-types-item" [ngClass]="{'active-tag':tagFilterActive[i]}" *ngFor="let type of chordsTypes; let i = index" (click)="filterChords(i)">
-        <div class="code" [ngClass]="{'type-sete-quatro':type.code == '74'}"> <span *ngIf="type.code !== '74'">{{type.code}}</span> 
-            <span class="sete" *ngIf="type.code == '74'">7</span>
-            <span class="quatro" *ngIf="type.code == '74'">4</span>
+<div class="sticky-header">
+    <div style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">
+            <h2 class="quantifizer">Qtde de acordes: <span *ngIf="!loadingChords">{{ chordsQuantity }}</span> </h2>
         </div>
-        <div class="title">{{type.title}}</div>
+
+        <div style="display:flex; justify-content:end; flex-grow: 1;text-align: right; margin-right: 200px;">  
+            <!-- <h3 class="link" (click)="navigate('criador')">Ir para o criador →</h3>
+            <h3 class="link" (click)="navigate('buscador')">Ir para o buscador →</h3> -->
+            <h3 class="link" (click)="navigate('chartgen')">Ir para o gerador →</h3>
+        </div>
+    </div>
+
+    <div *ngIf="loadingChords">
+        <img width="100px" src="assets/spinning-loading.gif" alt="">
+        <p style="font-size:20px">construindo acordes...</p>
+    </div>
+
+    <div *ngIf="errorMessageTitle.length > 0">
+        <p style="font-size:20px; margin:0 0 5px">{{errorMessageTitle}}</p>
+        <p style="font-size:20px; margin:0">{{errorMessage}}</p>
+        <img style="width:100px; margin-top: 20px;" src="assets/face-palm.jpg" alt="">
+    </div>
+
+    <div [ngClass]="{'hidden':loadingChords}" class="chords-types">
+        <div class="chords-types-item" [ngClass]="{'active-tag':tagFilterActive[i]}" *ngFor="let type of chordsTypes; let i = index" (click)="filterChords(i)">
+            <div class="code" [ngClass]="{'type-sete-quatro':type.code == '74'}"> <span *ngIf="type.code !== '74'">{{type.code}}</span> 
+                <span class="sete" *ngIf="type.code == '74'">7</span>
+                <span class="quatro" *ngIf="type.code == '74'">4</span>
+            </div>
+            <div class="title" style="font-family:'Roboto'; font-size:'15px'; font-weight:100">{{type.title}}</div>
+        </div>
     </div>
 </div>
+
+
 
 
 

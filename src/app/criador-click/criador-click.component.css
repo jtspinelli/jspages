@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono:wght@300&display=swap');
+
+* {
+    font-family: 'Roboto';
+}
+
+.criador-title h1 {
+    font-family: 'Roboto Mono', monospace;
+}
+
 .diagram {
     display: grid;
     position: relative;
@@ -17,6 +27,7 @@
     width: 240px;
     margin-left: 101px;
     margin-top: 3px;
+    margin-bottom: 50px;
 }
 
 .footer-img {
@@ -26,7 +37,7 @@
 
 .chord-name {
     width: 203px;
-    margin-left: 120px;
+    margin-left: 127px;
 }
 
 .input-chord-name {

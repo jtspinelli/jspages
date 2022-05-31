@@ -1,0 +1,13 @@
+.svg-header {
+    /* font-family: sans-serif; */
+    text-align: center;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.svg-header h1, h2{
+    margin: 0;
+}
+
+.svg-header h2 {
+    font-weight: 100;
+}

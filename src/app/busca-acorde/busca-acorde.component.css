@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono:wght@300&display=swap');
+
+* {
+    font-family: 'Roboto';
+}
+
 .linkNextPage {
     text-align: right;
     padding-right: 8%;
+    font-weight: 300;
 }
 
 .linkNextPage:hover {
@@ -19,7 +26,7 @@
     border-radius: 0px 0px 5px 5px; 
     width: 137px;
     position: absolute;
-    left: 10.4%;
+    left: 207px;
     z-index: 1;
 }
 
@@ -74,4 +81,10 @@ ul {
     border: 1px solid;
     border-radius: 8px;
     -webkit-user-drag: none;
+}
+
+.explanation {
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid gainsboro;
 }
