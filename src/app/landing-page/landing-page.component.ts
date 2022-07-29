@@ -13,7 +13,8 @@ export class LandingPageComponent implements OnInit {
   projects = [
     {name:'googlepicker', url:'https://jtspinelli02.github.io/googlepicker/'},
     {name:'controlefinanceiro', url:'https://jonatesch.github.io/projetocontrolefinanceiro/paginaprincipal/movimentacoes'},
-    {name:'geradordeacordes', url:'https://jtspinelli.github.io/jspages/pool'}
+    {name:'geradordeacordes', url:'https://jtspinelli.github.io/jspages/pool'},
+    {name: 'fyc', url: 'https://enigmatic-everglades-73136.herokuapp.com/'}
   ]
 
   navigate(page:string){
@@ -25,15 +26,15 @@ export class LandingPageComponent implements OnInit {
       } else {
         this.router.navigate(['/'+page])
       }
-      
+
     }
-    
+
   }
 
   showProject(project:string) {
     let url = this.projects.filter(e => e.name == project)[0].url
-    document.getElementById('iframe')?.setAttribute('src',url) 
- 
+    document.getElementById('iframe')?.setAttribute('src',url)
+
     document.getElementById("iframe")?.scrollIntoView({behavior:'smooth'})
   }
 

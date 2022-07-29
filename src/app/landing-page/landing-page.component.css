@@ -2,8 +2,13 @@
     font-size: 30px;
     list-style: none;
     display: flex;
-    width: 55%;
-    justify-content:space-evenly;
+    /*width: 55%;*/
+    /*justify-content:space-evenly;*/
+}
+
+.meus-projetos a {
+  text-decoration: none;
+  color: unset;
 }
 
 .meus-projetos li {
@@ -12,8 +17,8 @@
     grid-template-columns: auto auto;
     align-items: center;
     justify-content: center;
-    /* padding: 10px 30px; */
-    width: 100%;
+     padding: 0 30px;
+    /*width: 100%;*/
     margin-left: 10px;
     text-align: center;
     height: 75px;
